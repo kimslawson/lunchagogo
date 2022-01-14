@@ -133,6 +133,9 @@ section.bg1 {
 /*  background-size: 100%; */
   /* Keep the image from overlapping sibling elements. */ 
   z-index: -1;
+  
+  /* add blur here, and not using backdrop-filter, because that doesn't work with position: absolute */
+  filter: blur(2px);
 }
 
 /* The styling for the static div. */
