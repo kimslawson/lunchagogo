@@ -316,7 +316,7 @@ section.bg1 {
   margin-right: 1vw;
 }
 
-#surprise {position:fixed; top:0px; left:0px; width:100vw; height:100vw; pointer-events: none; overflow: hidden}
+#surprise {position:fixed; top:0px; left:0px; width:100vw; height:100vw; pointer-events: none;}
 
 
 /* Media Queries */
