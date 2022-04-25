@@ -145,8 +145,9 @@ section.bg1 {
 
 /* The styling for the static div. */
 .static {
-  background: red;
-  background: #b51717;
+/*  background: red; */
+/*  background: #b51717; */
+  background: #F2912A;
 /*  background-image: url('https://ak7.picdn.net/shutterstock/videos/1030559387/thumb/1.jpg'); */
   background-image: url('/img/static-bg.jpg');
   background-repeat: no-repeat;
