@@ -1,0 +1,405 @@
+/* Tiny reset thingy */
+body,html{margin:0;padding:0;}
+* {box-sizing: border-box;}
+/* add button resets like on MG and other mobile resets */
+
+/* reference utility classes */
+.balance-text {
+	text-wrap: balance;  /* Apply (proposed) CSS style */
+}
+
+@font-face {
+  font-family: 'panpizza';
+  src: url('panpizza-webfont.woff2') format('woff2'),
+	   url('panpizza-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'refrigeratordeluxe';
+  src: local('Refrigerator Deluxe'), local('RefrigeratorDeluxe'),
+	   url('RefrigeratorDeluxe.woff2') format('woff2'),
+	   url('RefrigeratorDeluxe.woff') format('woff'),
+	   url('RefrigeratorDeluxe.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+a {
+  color: white;
+/*	text-underline-position: under; */
+}
+h1, h2, h3, h4, h5 {
+  font-family: panpizza;
+  font-size: 12vw;
+font-size: clamp(2rem, 12vw, 8rem);
+  text-align: center;
+  margin: 0.25em 0.75ex;
+  letter-spacing: 0.5vw;
+}
+h1 a:active, h2 a:active, h3 a:active, h4 a:active, h5 a:active {
+  transition: 0.25s;
+  text-shadow: 0px 0px 0px rgba(0,0,0,0.5);
+}
+h3 {
+  font-size: 6vw;
+}
+p {
+  font-family: panpizza;
+  font-size: 6vw;
+font-size: clamp(1.75rem, 6vw, 4rem);
+  margin: 0 0.75ex;
+}
+p a {
+  color: black;
+  letter-spacing: 0.25vw;
+}
+p a:hover {
+  transition: 0.25s;
+  text-shadow: 0px 0px 10px rgba(255,255,255,0.5);
+}
+p a:active {
+  transition: 0.25s;
+  text-shadow: 0px 0px 0px rgba(255,255,255,0.5);
+}
+section.static h2 {
+  max-width: 5em;
+max-width: 6em;
+max-width: 7em;
+}
+section.static p {
+  max-width: 12.35em;
+max-width: 9.25em;
+  color: black;
+  text-shadow: none;
+}
+
+::selection {
+  background-color: #2d7bca;
+}
+
+.wrapper {
+  /* The height needs to be set to a fixed value for the effect to work.
+   * 100vh is the full height of the viewport. */
+  height: 100vh;
+  /* The scaling of the images would add a horizontal scrollbar, so disable x overflow. */
+  overflow-x: hidden;
+  /* Enable scrolling on the page. */
+  overflow-y: auto;
+  /* Set the perspective to 2px. This is essentailly the simulated distance from the viewport to transformed objects.*/
+  perspective: 2px;
+  scroll-behavior: smooth;
+}
+
+.section {
+  /* Needed for children to be absolutely positioned relative to the parent. */
+  position: relative;
+  /* The height of the container. Must be set, but it doesn't really matter what the value is. */
+  min-height: 100vh;
+  
+  /* For text formatting. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  text-shadow: 0 0 10px #000;
+}
+section.bg1 {
+  justify-content: space-between;
+}
+
+.parallax {
+  transform-style: preserve-3d;
+}
+
+.parallax::after {
+  /* Display and position the pseudo-element */
+  content: " ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+   
+  /* do appropriate background things */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+	
+  /* Move the pseudo-element back away from the camera,
+   * then scale it back up to fill the viewport.
+   * Because the pseudo-element is further away, it appears to move more slowly, like in real life. */
+/*  transform: translateZ(-2px) scale(2); */
+  transform: translate3d(0,0,-2px) scale(2);
+  /* Force the background image to fill the whole element. */
+/*  background-size: 100%; */
+  /* Keep the image from overlapping sibling elements. */ 
+  z-index: -1;
+  
+  /* add blur here, and not using backdrop-filter, because that doesn't work with position: absolute */
+  filter: blur(2px);
+}
+
+/* The styling for the static div. */
+.static {
+/*  background: red; */
+/*  background: #b51717; */
+  background: #F2912A;
+/*  background-image: url('https://ak7.picdn.net/shutterstock/videos/1030559387/thumb/1.jpg'); */
+  background-image: url('/img/static-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding: 0 0 3em 0;
+  z-index: 1; /* without this, the static sections get overlaid by the parallax sections */
+  /* Reminder: if it's a CSS problem, it's always z-index */
+}
+
+/* Sets the actual background images to adorable kitties. This part is crucial. */
+.bg1::after {
+  background-image: url('/img/lunch-a-gogo-follow-the-food.jpg');
+  background-color: white;
+}
+
+.bg2::after {
+  background-image: url('/img/lunch-a-gogo-feel-the-hype.png');
+  background-color: black;
+}
+
+
+/* utilities from vendors */
+.pulsing {
+  animation: opacityPulse 4s ease-out;
+  animation-iteration-count: infinite; 
+  opacity: 1;
+}
+
+/* tab view */
+.tabform {
+  transition: all 0.5s ease-in-out;
+}
+.tabform:focus-within {
+  transform: scale(1.05);
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  margin-bottom: -2px;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  transition: 0.5s background-color;
+  background-color: transparent;
+  color: black;
+  float: left;
+  border: none; ,
+  outline: none;
+  cursor: pointer;
+  padding: 1ex;
+/*  transition: 0.3s; */
+  font-family: panpizza;
+  font-size: 4vw;
+  width: 32vw;
+}
+.tab button.wide {
+  width: auto;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: white;
+  color: #333;
+}
+.tab button:focus {
+  outline: none;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: white;
+  color: #333;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  width: 64vw;
+  background-color: white;
+  color: #333;
+  text-shadow: none;
+  padding: 2vmax 3vmax 3vmax 3vmax; 
+  margin-bottom: 6vw;
+}
+
+.tabcontent p {
+  margin: 0 auto;
+  max-width: none !important;
+}
+
+
+/* Forms */
+.form .form-control {
+  display: block;
+}
+.form-group {
+  margin-left: 0px;
+  margin-bottom: 1ex;
+}
+.form-group label {
+}
+.form-group .note {
+  float: right;
+  font-size: 2vw;
+}
+.form-group .required {
+  color: #cc0000;
+}
+.form-group.field-zip, .form-group.field-phone {
+  width: 49%;
+  display: inline-block;
+}
+.form-group.field-zip {
+  margin-left: 0.5ex;
+  float: right;
+}
+.form label {
+  font-family: panpizza;
+  font-size: 4vw;
+}
+.form input {
+  font-family: refrigeratordeluxe;
+  font-size: 4vw;
+  width: 100%;
+  -webkit-appearance: none;
+  border-radius: 0.5ex;
+  padding: 0.25ex 0.51ex;
+  border: 1px solid black;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.25) inset;
+  color: #888888;
+  letter-spacing: unset;
+}
+.form input[type="submit"] {
+  background-color: #ffbb18;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+  margin: 0.25em 0 0 0;
+  color: black;
+}
+.form input[type="submit"]:active {
+  transition: 0.25s ease-in-out;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.5) inset;
+}
+.form input:focus {
+  outline: none;
+/*  box-shadow: 0 0px 10px #f6960d inset; */
+  background-color: black;
+  color: white;
+}
+.form input::selection {
+  color: white;
+  background-color: #2d7bca;
+}
+.form input:-webkit-autofill {
+  /* remove autofill background
+     from https://stackoverflow.com/questions/2781549/removing-input-background-colour-for-chrome-autocomplete */
+  -webkit-background-clip: text !important;
+}
+
+.social ul {
+  margin: 0px;
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+}
+.footer .social li {
+  display: inline-block;
+}
+.footer .social img,
+.footer .social li.empty {
+  width: 5vw;
+  margin-right: 1vw;
+}
+
+#surprise {position:fixed; top:0px; left:0px; width:100vw; height:100vw; pointer-events: none;}
+
+
+/* Media Queries */
+
+/* silly ipad-specific fixes */
+@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait) {
+  .wrapper {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+  .parallax::after {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+}
+@media all and (device-width: 1024px) and (device-height: 768px) and (orientation:landscape) {
+  .wrapper {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+  .parallax::after {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+}
+
+/* Small Screens */
+@media only screen and (max-width: 768px) {
+  .tab button {
+    font-size: 6vw;
+  }
+  h1, h2 {
+/*    font-size: 14vw; */
+/*	letter-spacing: 0.5vw; */
+  }
+  .wrapper {
+	/* silly fix for iOS from httploas://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+  .parallax::after {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+  section.static h2 {
+    max-width: 4.75em;
+max-width: none;
+  }
+  h3, p {
+/*    font-size: 9.5vw; */
+  }
+  .tab button {
+    width: 44vw;
+  }
+  .tabcontent {
+	width: 88vw;
+  }
+  .form label {
+    font-size: 8vw;
+  }
+  .form input {
+    font-size: 8vw;
+/*	letter-spacing: 0.5vw; */
+  }
+  .form-group.field-phone {
+/*    width: 50vw; */
+    width: 66%;
+  }
+  .form-group.field-zip {
+/*    width: 25vw; */
+    width: 30%;
+  }
+}
