@@ -80,6 +80,11 @@ max-width: 9.25em;
   background-color: #2d7bca;
 }
 
+  main {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
 .wrapper {
   /* The height needs to be set to a fixed value for the effect to work.
    * 100vh is the full height of the viewport. */
@@ -114,6 +119,10 @@ section.bg1 {
 .parallax {
   transform-style: preserve-3d;
 }
+
+  .parallax {
+    position: -webkit-sticky;
+  }
 
 .parallax::after {
   /* Display and position the pseudo-element */
