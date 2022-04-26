@@ -121,13 +121,13 @@ section.bg1 {
 }
 
   .parallax, .parallax::after {
-    position: sticky;
+    position: -webkit-sticky !important;
   }
 
 .parallax::after {
   /* Display and position the pseudo-element */
   content: " ";
-  position: absolute;
+/*  position: absolute; */
   top: 0;
   right: 0;
   bottom: 0;
