@@ -120,7 +120,7 @@ section.bg1 {
   transform-style: preserve-3d;
 }
 
-  .parallax {
+  .parallax, .parallax::after {
     position: -webkit-sticky;
   }
 
