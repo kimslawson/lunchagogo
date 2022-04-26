@@ -92,7 +92,7 @@ max-width: 9.25em;
   /* The scaling of the images would add a horizontal scrollbar, so disable x overflow. */
   overflow-x: hidden;
   /* Enable scrolling on the page. */
-  overflow-y: auto;
+/*  overflow-y: auto; */
   /* Set the perspective to 2px. This is essentailly the simulated distance from the viewport to transformed objects.*/
   perspective: 2px;
   scroll-behavior: smooth;
