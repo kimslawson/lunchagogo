@@ -1,6 +1,12 @@
-navigator.geolocation.getCurrentPosition(position => {
-//  console.log(position)
-//  https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude/8674#8674
+
+
+function openTab(evt, tabName) {
+  // get and fuzz user's current lat and lon
+  // do it here and not right off in init because we want it to be as a result of user action and to build trust
+
+  navigator.geolocation.getCurrentPosition(position => {
+    //  console.log(position)
+    //  https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude/8674#8674
 
     // fuzz location for privacy
     fuzzylat = position.coords.latitude.toFixed(3);
@@ -10,15 +16,14 @@ navigator.geolocation.getCurrentPosition(position => {
     document.getElementById('truck-longitude').value = fuzzylon;
     document.getElementById('foodie-latitude').value = fuzzylat;
     document.getElementById('foodie-longitude').value = fuzzylon;
-}, error => {
-	console.error(error)
-}, {
-  timeout: 10000,
-  maximumAge: 10000,
-  enableHighAccuracy: true
-})
+  }, error => {
+	  console.error(error)
+  }, {
+    timeout: 10000,
+    maximumAge: 10000,
+    enableHighAccuracy: true
+  })
 
-function openTab(evt, tabName) {
   // Declare all variables
   var i, tabcontent, tablinks;
 
