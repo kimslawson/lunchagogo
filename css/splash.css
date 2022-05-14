@@ -52,6 +52,10 @@ p {
 font-size: clamp(1.75rem, 6vw, 4rem);
   margin: 0 0.75ex;
 }
+p.supplemental {
+  font-size: 4.25vw;
+  max-width: 75vw;
+}
 p a {
   color: black;
   letter-spacing: 0.25vw;
