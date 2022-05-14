@@ -1,9 +1,15 @@
 navigator.geolocation.getCurrentPosition(position => {
 //  console.log(position)
-    document.getElementById('truck-latitude').value = position.coords.latitude;
-    document.getElementById('truck-longitude').value = position.coords.longitude;
-    document.getElementById('foodie-latitude').value = position.coords.latitude;
-    document.getElementById('foodie-longitude').value = position.coords.longitude;
+//  https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude/8674#8674
+
+    // fuzz location for privacy
+    fuzzylat = position.coords.latitude.toFixed(3);
+    fuzzylon = position.coords.longitude.toFixed(3);
+    alert(fuzzylat, fuzzylon)    
+//    document.getElementById('truck-latitude').value = position.coords.latitude;
+//    document.getElementById('truck-longitude').value = position.coords.longitude;
+//    document.getElementById('foodie-latitude').value = position.coords.latitude;
+//    document.getElementById('foodie-longitude').value = position.coords.longitude;
 }, error => {
 	console.error(error)
 }, {
