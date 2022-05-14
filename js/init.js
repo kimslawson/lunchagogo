@@ -5,11 +5,11 @@ navigator.geolocation.getCurrentPosition(position => {
     // fuzz location for privacy
     fuzzylat = position.coords.latitude.toFixed(3);
     fuzzylon = position.coords.longitude.toFixed(3);
-    alert(fuzzylat, fuzzylon)    
-//    document.getElementById('truck-latitude').value = position.coords.latitude;
-//    document.getElementById('truck-longitude').value = position.coords.longitude;
-//    document.getElementById('foodie-latitude').value = position.coords.latitude;
-//    document.getElementById('foodie-longitude').value = position.coords.longitude;
+
+    document.getElementById('truck-latitude').value = fuzzylat;
+    document.getElementById('truck-longitude').value = fuzzylon;
+    document.getElementById('foodie-latitude').value = fuzzylat;
+    document.getElementById('foodie-longitude').value = fuzzylon;
 }, error => {
 	console.error(error)
 }, {
