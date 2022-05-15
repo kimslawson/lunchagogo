@@ -1,4 +1,4 @@
-/* Tiny reset thingy */
+inp/* Tiny reset thingy */
 body,html{margin:0;padding:0;}
 * {box-sizing: border-box;}
 /* add button resets like on MG and other mobile resets */
@@ -313,6 +313,17 @@ section.bg1 {
      from https://stackoverflow.com/questions/2781549/removing-input-background-colour-for-chrome-autocomplete */
   -webkit-background-clip: text !important;
 }
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #ccc;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #ccc;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #ccc;
+}
+
 
 .social ul {
   margin: 0px;
