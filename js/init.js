@@ -16,6 +16,9 @@ function openTab(evt, tabName) {
     document.getElementById('truck-longitude').value = fuzzylon;
     document.getElementById('foodie-latitude').value = fuzzylat;
     document.getElementById('foodie-longitude').value = fuzzylon;
+  alert(fuzzylat);
+  alert(fuzzylon);
+
   }, error => {
 	  console.error(error)
   }, {
@@ -23,8 +26,6 @@ function openTab(evt, tabName) {
     maximumAge: 10000,
     enableHighAccuracy: true
   })
-  alert(fuzzylat);
-  alert(fuzzylon);
 
   // Declare all variables
   var i, tabcontent, tablinks;
