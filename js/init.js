@@ -7,17 +7,19 @@ function openTab(evt, tabName) {
   navigator.geolocation.getCurrentPosition(position => {
     //  console.log(position)
     //  https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude/8674#8674
+    
+    //  as always, there's a relevant xkcd for this https://xkcd.com/2170/
 
     // fuzz location for privacy
-    fuzzylat = position.coords.latitude.toFixed(3);
-    fuzzylon = position.coords.longitude.toFixed(3);
+    // 2 digits should be good for rough neighborhood differentiation
+    // see https://www.gpsvisualizer.com/display/20220516062014-09186-map.html
+    fuzzylat = position.coords.latitude.toFixed(2);
+    fuzzylon = position.coords.longitude.toFixed(2);
 
     document.getElementById('truck-latitude').value = fuzzylat;
     document.getElementById('truck-longitude').value = fuzzylon;
     document.getElementById('foodie-latitude').value = fuzzylat;
     document.getElementById('foodie-longitude').value = fuzzylon;
-  alert(fuzzylat);
-  alert(fuzzylon);
 
   }, error => {
 	  console.error(error)
