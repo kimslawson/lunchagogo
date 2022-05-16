@@ -23,6 +23,8 @@ function openTab(evt, tabName) {
     maximumAge: 10000,
     enableHighAccuracy: true
   })
+  alert(fuzzylat);
+  alert(fuzzylon);
 
   // Declare all variables
   var i, tabcontent, tablinks;
