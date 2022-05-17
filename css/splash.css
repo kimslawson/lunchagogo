@@ -422,7 +422,7 @@ max-width: none;
 /*    width: 25vw; */
     width: 30%;
   }
-  .footer .dingus, .footer p {
+  section.footer .dingus, section.footer p {
     display: block;
     text-align: center;
   }
