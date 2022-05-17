@@ -422,4 +422,7 @@ max-width: none;
 /*    width: 25vw; */
     width: 30%;
   }
+  .footer .dingus {
+    display: block;
+  }
 }
