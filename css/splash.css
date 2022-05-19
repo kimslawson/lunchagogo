@@ -343,6 +343,9 @@ section.bg1 {
 section.footer p {
   max-width: 88vw;
 }
+.dingus {
+  font-size: smaller;
+}
 
 #surprise {position:fixed; top:0px; left:0px; width:100vw; height:100vw; pointer-events: none;}
 
