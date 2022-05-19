@@ -89,6 +89,7 @@ max-width: 9.25em;
   /* The height needs to be set to a fixed value for the effect to work.
    * 100vh is the full height of the viewport. */
   height: 100vh;
+  height: -webkit-fill-available;
   /* The scaling of the images would add a horizontal scrollbar, so disable x overflow. */
   overflow-x: hidden;
   /* Enable scrolling on the page. */
@@ -103,6 +104,7 @@ max-width: 9.25em;
   position: relative;
   /* The height of the container. Must be set, but it doesn't really matter what the value is. */
   min-height: 100vh;
+  height: -webkit-fill-available;
   
   /* For text formatting. */
   display: flex;
