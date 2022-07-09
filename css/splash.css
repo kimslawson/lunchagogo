@@ -262,7 +262,7 @@ section.bg1 {
 }
 .form-group .note {
   float: right;
-  font-size: 2vw;
+  font-size: clamp(1.5rem, 4.25vw, 2rem);
 }
 .form-group .required {
   color: #cc0000;
