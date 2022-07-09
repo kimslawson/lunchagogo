@@ -110,9 +110,10 @@ max-width: 9.25em;
   /* Needed for children to be absolutely positioned relative to the parent. */
   position: relative;
   /* The height of the container. Must be set, but it doesn't really matter what the value is. */
-  height: 100vh;
-  min-height: -webkit-fill-available;
-  min-height: fill-available;
+  min-height: 100vh;
+  height: auto;
+/*  min-height: -webkit-fill-available; */
+/*  min-height: fill-available; */
   
   /* For text formatting. */
   display: flex;
