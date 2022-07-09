@@ -1,12 +1,14 @@
-body,html{margin:0;padding:0;}
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
 * {box-sizing: border-box;}
 
 html { 
   overflow: hidden; /* remove duplicate vertical scrollbar */
 }
-body {
-  margin: 0; /* get rid of padding around overlay */
-}
+
 /* add button resets like on MG and other mobile resets */
 
 /* reference utility classes */
