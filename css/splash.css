@@ -407,8 +407,8 @@ section.footer p {
   }
   .parallax::after {
 	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
-	webkit-backface-visibility: hidden;
-	-webkit-transform: translate3d(0,0,0);
+/*	webkit-backface-visibility: hidden; */
+/*	-webkit-transform: translate3d(0,0,0); */
   }
   section.static h2 {
     max-width: 4.75em;
