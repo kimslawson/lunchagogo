@@ -110,7 +110,7 @@ max-width: 9.25em;
   /* Needed for children to be absolutely positioned relative to the parent. */
   position: relative;
   /* The height of the container. Must be set, but it doesn't really matter what the value is. */
-  min-height: 100vh;
+  height: 100vh;
   min-height: -webkit-fill-available;
   min-height: fill-available;
   
@@ -335,7 +335,9 @@ section.bg1 {
   color: #ccc;
 }
 
-
+section.footer {
+  height: auto;
+}
 .social ul {
   margin: 0px;
   display: flex;
