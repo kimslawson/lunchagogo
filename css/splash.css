@@ -400,6 +400,9 @@ section.footer p {
 /*    font-size: 14vw; */
 /*	letter-spacing: 0.5vw; */
   }
+  .downward.indicator {
+    padding-bottom: 1.25em;
+  }
   .wrapper {
 	/* silly fix for iOS from httploas://github.com/animate-css/animate.css/issues/298 */
 	webkit-backface-visibility: hidden;
