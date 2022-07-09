@@ -169,7 +169,7 @@ section.bg1 {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  padding: 0 0 3em 0;
+  padding: 2em 0;
   z-index: 1; /* without this, the static sections get overlaid by the parallax sections */
   /* Reminder: if it's a CSS problem, it's always z-index */
 }
@@ -440,6 +440,9 @@ max-width: none;
   .form-group.field-zip {
 /*    width: 25vw; */
     width: 30%;
+  }
+  section.footer {
+    padding-bottom: 5em;
   }
   section.footer .dingus, section.footer p {
     display: block;
