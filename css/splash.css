@@ -39,6 +39,13 @@ a {
   color: white;
 /*	text-underline-position: under; */
 }
+a:hover img {
+    transform: scale(1.05);
+}
+a img {
+    transition: transform 125ms ease-in-out;
+}
+
 h1, h2, h3, h4, h5 {
   font-family: panpizza;
   font-size: 12vw;
@@ -54,6 +61,7 @@ h1 a:active, h2 a:active, h3 a:active, h4 a:active, h5 a:active {
 h3 {
   font-size: 6vw;
 }
+
 p {
   font-family: panpizza;
   font-size: 6vw;
@@ -82,6 +90,7 @@ p a:active {
   transition: 0.25s;
   text-shadow: 0px 0px 0px rgba(255,255,255,0.5);
 }
+
 section.static h2 {
   max-width: 5em;
 max-width: 6em;
@@ -117,6 +126,7 @@ max-width: 9.25em;
   /* The height of the container. Must be set, but it doesn't really matter what the value is. */
   min-height: 100vh;
   height: auto;
+/* don't do this... it sucks */
 /*  min-height: -webkit-fill-available; */
 /*  min-height: fill-available; */
   
@@ -135,7 +145,6 @@ section.bg1 {
 .parallax {
   transform-style: preserve-3d;
 }
-
 .parallax::after {
   /* Display and position the pseudo-element */
   content: " ";
