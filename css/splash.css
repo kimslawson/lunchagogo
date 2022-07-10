@@ -373,6 +373,21 @@ section.footer p {
 .dingus {
   font-size: smaller;
 }
+.dingus::after {
+  content: "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️️";
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(calc(50vw - 50%), calc(50vh - 50%));
+  padding: 0.5em;
+  background-color: rgba(255,255,255,0.95);
+  border-radius: 0.5em;
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+}
+.dingus:hover::after {
+  opacity: 1;
+}
 
 #surprise {
   position: fixed; 
