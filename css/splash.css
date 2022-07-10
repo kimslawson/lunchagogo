@@ -56,13 +56,13 @@ font-size: clamp(2rem, 12vw, 8rem);
 }
 h1 a, h2 a, h3 a, h4 a, h5 a {
   transition: transform 125ms ease-in-out;
+  display: inline-block;
 }
 h1 a:active, h2 a:active, h3 a:active, h4 a:active, h5 a:active {
   transition: 125ms ease-in-out;
   text-shadow: 0px 0px 0px rgba(0,0,0,0.5);
 }
 h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
-  display: inline-block;
   transform: scale(1.05);
 h3 {
   font-size: 6vw;
