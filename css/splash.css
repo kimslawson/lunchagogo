@@ -316,7 +316,8 @@ section.bg1 {
   color: black;
 }
 .form input[type="submit"]:active {
-  transition: 0.25s ease-in-out;
+  background-color: #E49237;
+  transition: 0.125s ease-in-out;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.5) inset;
 }
 .form input:focus {
