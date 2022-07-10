@@ -61,9 +61,11 @@ font-size: clamp(1.75rem, 6vw, 4rem);
   margin: 0 0.75ex;
 }
 p.supplemental {
-  font-size: clamp(1.5rem, 4.25vw, 2rem);
-  max-width: clamp(60vw,75vw,88vw) !important;
   margin-bottom: 1ex;
+  font-size: clamp(1.5rem, 4.25vw, 2rem);
+/*  max-width: clamp(60vw,75vw,88vw) !important; /* I thought this would work but it's not as good as the simple old way below */
+  width: 21em !important;
+  max-width: 75vw !important;
 }
 p a {
   color: black;
