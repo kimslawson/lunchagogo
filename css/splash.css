@@ -394,6 +394,9 @@ section.footer p {
   border-radius: 0.5em;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
+  
+  /* if we don't do this, the ::after element will fade in on it's own hover, not just the parent .dingus */
+  pointer-events: none;
 }
 .dingus:hover::after {
   opacity: 1;
