@@ -378,7 +378,7 @@ section.footer p {
   height: 100vw; 
   pointer-events: none;
 }
-.wrapper > i {
+body > i {
   pointer-events: none;
 }
 
