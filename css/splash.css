@@ -321,7 +321,7 @@ section.bg1 {
   letter-spacing: unset;
   transition: background 0.125s ease-in-out;
 }
-.form input[type="text"] {
+.form input[type="text"], .form input[type="email"], .form input[type="tel"] {
   font-family: refrigeratordeluxe;
   letter-spacing: -0.0625vw;
 }
