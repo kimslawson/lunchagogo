@@ -373,6 +373,7 @@ section.footer p {
 .dingus {
   font-size: smaller;
 }
+/* the easter egg wasn't discoverable, so I added this tip */
 .dingus::after {
   content: "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️️";
   position: fixed;
@@ -380,10 +381,10 @@ section.footer p {
   left: 0;
   transform: translate(calc(50vw - 50%), calc(50vh - 50%));
   padding: 0.5em;
-  background-color: rgba(255,255,255,0.95);
+  background-color: rgba(255,255,255,0.9);
   border-radius: 0.5em;
   opacity: 0;
-  transition: opacity 0.25s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 .dingus:hover::after {
   opacity: 1;
