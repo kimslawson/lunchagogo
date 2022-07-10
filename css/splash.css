@@ -343,6 +343,11 @@ section.bg1 {
   background-color: black;
   color: white;
 }
+.form input::placeholder {
+    opacity: 0.75;
+    /* the default placeholder color is too light on the focused inputs */
+    /* this might run afoul of WCAG contrast guidelines, but it's just a placeholder so ¯\_(ツ)_/¯ */
+}
 .form input::selection {
   color: white;
   background-color: #2d7bca;
