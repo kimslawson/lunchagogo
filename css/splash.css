@@ -213,11 +213,14 @@ section.bg1 {
 /* tab view */
 .tabform {
   margin-top: 1em;
-  transition: all 0.125s ease-in-out 3s; /* slight delay after focus change */
+  transition: all 0.125s ease-in-out 3s; 
+  /* slight delay after focus change */
+  /* this allows for clicking submit without the form shrinking, jarringly */
 }
 .tabform:focus-within {
   transform: scale(1.05);
-  transition: all 0.125s ease-out 0s; /* instant feedback when focused */
+  transition: all 0.125s ease-out 0s; 
+  /* instant feedback when focused */
 }
 
 /* Style the tab */
