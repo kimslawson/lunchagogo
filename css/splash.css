@@ -132,7 +132,7 @@ max-width: 9.25em;
   /* The height of the container. Must be set, but it doesn't really matter what the value is. */
   min-height: 100vh;
   height: auto;
-/* don't do this... it sucks */
+/* don't do this fix for mobilesafari's chrome... it sucks */
 /*  min-height: -webkit-fill-available; */
 /*  min-height: fill-available; */
   
@@ -178,11 +178,6 @@ section.bg1 {
   /* add blur here, and not using backdrop-filter, because that doesn't work with position: absolute */
   filter: blur(2px);
 }
-.b2.section.parallax::after {
-  transform: translate3d(0,0,-2px) scale(2.05);
-  /* Force the background image to fill the whole element. */
-  /* needs to be 2.05 rather than 2 because there's a small error by a few px at the edge and it looks bad when the background is black */
-}
 
 /* The styling for the static div. */
 .static {
@@ -202,7 +197,7 @@ section.bg1 {
   padding-bottom: 4em; /* need more space on wide but short screens */
 }
 
-/* Sets the actual background images to adorable kitties. This part is crucial. */
+/* Sets the actual background images */
 .bg1::after {
   background-image: url('/img/lunch-a-gogo-follow-the-food.jpg');
   background-color: white;
@@ -211,6 +206,9 @@ section.bg1 {
 .bg2::after {
   background-image: url('/img/lunch-a-gogo-feel-the-hype.png');
   background-color: black;
+  transform: translate3d(0,0,-2px) scale(2.05);
+  /* Force the background image to fill the whole element. */
+  /* needs to be 2.05 rather than 2 because there's a small error by a few px at the edge and it looks bad when the background is black */
 }
 
 
