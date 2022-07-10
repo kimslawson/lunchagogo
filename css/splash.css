@@ -206,7 +206,7 @@ section.bg1 {
 .bg2::after {
   background-image: url('/img/lunch-a-gogo-feel-the-hype.png');
   background-color: black;
-  transform: translate3d(0,0,-2px) scale(2.05);
+  transform: translate3d(0,0,-2px) scale(2.05) !important;
   /* Force the background image to fill the whole element. */
   /* needs to be 2.05 rather than 2 because there's a small error by a few px at the edge and it looks bad when the background is black */
 }
