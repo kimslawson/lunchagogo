@@ -370,8 +370,17 @@ section.footer p {
   font-size: smaller;
 }
 
-#surprise {position:fixed; top:0px; left:0px; width:100vw; height:100vw; pointer-events: none;}
-
+#surprise {
+  position: fixed; 
+  top: 0px; 
+  left: 0px; 
+  width: 100vw; 
+  height: 100vw; 
+  pointer-events: none;
+}
+.wrapper > i {
+  pointer-events: none;
+}
 
 /* Media Queries */
 
