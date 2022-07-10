@@ -69,7 +69,7 @@ p.supplemental {
 }
 p a {
   color: black;
-  letter-spacing: 0.25vw;
+  letter-spacing: 0.0625vw;
 }
 p a:hover {
   transition: 0.25s;
