@@ -310,7 +310,6 @@ section.bg1 {
   font-size: 4vw;
 }
 .form input {
-  font-family: refrigeratordeluxe;
   font-size: 4vw;
   width: 100%;
   -webkit-appearance: none;
@@ -322,10 +321,14 @@ section.bg1 {
   letter-spacing: unset;
   transition: background 0.125s ease-in-out;
 }
+.form input[type="text"] {
+  font-family: refrigeratordeluxe;
+  letter-spacing: -0.0625vw;
+}
 .form input[type="submit"] {
+  font-family: panpizza;
   background-color: #ffbb18;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
-  font-family: panpizza;
   padding: 0.25em 1em;
   width: auto;
   margin: .25em auto !important;
