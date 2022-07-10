@@ -201,7 +201,7 @@ section.bg1 {
 /* tab view */
 .tabform {
   margin-top: 1em;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.25s ease-in-out;
 }
 .tabform:focus-within {
   transform: scale(1.05);
