@@ -364,6 +364,7 @@ section.footer {
 }
 section.footer p {
   max-width: 88vw;
+  font-size: clamp(1.5rem, 4.25vw, 2rem);
 }
 .dingus {
   font-size: smaller;
