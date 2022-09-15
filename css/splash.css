@@ -64,6 +64,7 @@ h1 a:active, h2 a:active, h3 a:active, h4 a:active, h5 a:active {
 }
 h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
   transform: scale(1.05);
+}
 h3 {
   font-size: 6vw;
 }
@@ -246,7 +247,7 @@ section.bg1 {
   background-color: transparent;
   color: black;
   float: left;
-  border: none; ,
+  border: none;
   outline: none;
   cursor: pointer;
   padding: 1ex;
