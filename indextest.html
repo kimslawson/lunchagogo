@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Lunch a Go-Go alpha 2020-01-04 -->
+
+  <head>
+    <meta charset="utf-8">
+    <title>Lunch a Go-Go</title>
+    <meta name="description" content="Lunch a Go-Go connects food trucks and their followers. It's the app for foodies to track their favorite local mobile restaurants, hot dog stands, snack shacks, ice cream trucks, and more.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/vendors/css/infinite.css">
+    <link rel="stylesheet" type="text/css" href="/vendors/css/emoji-rain.css">
+    <!--  <link rel="stylesheet" type="text/css" href="/vendors/css/normalize.css"> -->
+    <!--  <link rel="stylesheet" type="text/css" href="/vendors/css/grid.css"> -->
+    <link rel="stylesheet" href="/css/splash.css?v=0.1">
+    <script src="/vendors/js/balance-text-master/balancetext.min.js"></script>
+    <script>
+      balanceText();
+    </script>
+    <script type="text/javascript" src="vendors/js/konami-js/konami.js"></script>
+    <script type="text/javascript" src="/js/init.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="apple-mobile-web-app-title" content="Lunch a Go-Go">
+    <meta name="application-name" content="Lunch a Go-Go">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="og:image:width" content="279">
+    <meta property="og:image:height" content="279">
+    <meta property="og:title" content="Lunch a Go-Go">
+    <meta property="og:description" content="Lunch a Go-Go connects food trucks and their followers. It's the app for foodies to track their favorite local mobile restaurants, hot dog stands, snack shacks, ice cream trucks, and more.">
+    <meta property="og:url" content="https://lunchagogo.app">
+    <meta property="og:image" content="https://lunchagogo.app/img/og-image.jpg">
+  </head>
+
+  <body>
+    <main class="wrapper">
+      <section class="bg1 section parallax">
+        <h2 class="spacer">&nbsp;</h2>
+        <h1>Find food trucks fast</hi>
+          <h2 class="pulsing downward indicator">⬇︎</h2>
+      </section>
+      <section class="pitch section static">
+        <h2>Why Lunch a Go-Go?</h2>
+        <p>Lunch a Go-Go connects food trucks and their followers. The service keeps foodies updated on the location of their favorite local mobile restaurants, hot dog stands, snack shacks, ice cream trucks, and more.</p>
+      </section>
+      <section class="bg2 section parallax">
+        <h1><a href="#form">Request early access</a></hi>
+      </section>
+      <section id="form" class="form section static">
+        <h2 class="balance-text">Sign up to be the first to follow the food!</h2>
+        <p class="supplemental">Tell us a little about you so that when we launch we can keep you in the loop! We ask for your rough location to understand where our foodies are from. If you prefer, just share your zip code.</p>
+        <div class="tabform">
+          <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'Food truck')">I am a food truck owner</button>
+            <button class="tablinks" onclick="openTab(event, 'Foodie')">I am a food truck follower</button>
+          </div>
+
+          <!-- Tab content -->
+          <div id="Food truck" class="tabcontent">
+            <!-- <h3>Food truck</h3> -->
+            <form id=“food_truck” method="post" action="/thank-you.html#form">
+              <input type="hidden" name="_subject" value="Ahoy from a new food truck!">
+              <input type="hidden" name="_to" value="getlunchagogo@gmail.com">
+              <input type="hidden" name="_cc" value="kimslawson@gmail.com">
+              <input type="hidden" name="_cc" value="robin.hamann4@gmail.com">
+              <input type="text" name="_gotcha" style="display: none;">
+              <div class="text form-group field-name">
+                <label class="text-label note"><span class="required">* required</span></label>
+                <label for="truck" class="text-label">Food Truck<span class="required">*</span></label>
+                <input type="text" class="form-control" name="truck" id="truck" placeholder="Taylor's Tasty Treats Truck">
+              </div>
+              <div class="text form-group field-name">
+                <label for="name" class="text-label">Name<span class="required">*</span></label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Taylor Thomas" required="required" aria-required="true">
+              </div>
+              <div class="text form-group field-email">
+                <label for="email" class="text-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email">
+              </div>
+              <div class="text form-group field-phone">
+                <label for="phone" class="text-label">Phone<span class="required">*</span></label>
+                <input type="tel" class="form-control" name="phone" value="+1" id="phone" required="required" aria-required="true">
+              </div>
+              <div class="text form-group field-zip">
+                <label for="zip" class="text-label">ZIP Code</label>
+                <input type="text" class="form-control" name="zip" id="zip">
+              </div>
+              <input type="hidden" name="latitude" access="false" id="truck-latitude">
+              <input type="hidden" name="longitude" access="false" id="truck-longitude">
+              <input type="submit" name="submit" value="Sign up!"></input>
+            </form>
+          </div>
+
+          <div id="Foodie" class="tabcontent">
+            <!-- <h3>Foodie</h3> -->
+            <form id=“foodie” method="post" action="/thank-you-foodie.html#form">
+              <input type="hidden" name="_subject" value="Ahoy from a new foodie!">
+              <input type="hidden" name="_to" value="getlunchagogo@gmail.com">
+              <input type="hidden" name="_cc" value="kimslawson@gmail.com">
+              <input type="hidden" name="_cc" value="robin.hamann4@gmail.com">
+              <input type="text" name="_gotcha" style="display: none;">
+              <div class="text form-group field-name">
+                <label class="text-label note"><span class="required">* required</span></label>
+                <label for="name" class="text-label">Name<span class="required">*</span></label>
+                <input type="text" class="form-control" name="name" id="name" required="required" aria-required="true">
+              </div>
+              <div class="text form-group field-email">
+                <label for="email" class="text-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email">
+              </div>
+              <div class="text form-group field-phone">
+                <label for="phone" class="text-label">Phone<span class="required">*</span></label>
+                <input type="tel" class="form-control" name="phone" value="+1" id="phone" required="required" aria-required="true" pattern="\+1[^0-9]*[0-9]{3}[^0-9]*[0-9]{3}[^0-9]*[0-9]{4}" title="Enter a valid US or Canadian phone number">
+              </div>
+              <div class="text form-group field-zip">
+                <label for="zip" class="text-label">ZIP Code</label>
+                <input type="text" class="form-control" name="zip" id="zip">
+              </div>
+              <input type="hidden" name="latitude" access="false" id="foodie-latitude">
+              <input type="hidden" name="longitude" access="false" id="foodie-longitude">
+              <input type="submit" name="submit" value="Sign up!"></input>
+            </form>
+          </div>
+        </div>
+      </section>
+      <section class="footer section static" style="background: none; min-height: auto;">
+        <p class="spacer">&nbsp;</p>
+        <p>© 2020&ndash;2022 Lunch a Go-Go
+          <span class="dingus">
+          <script type="text/javascript">
+              var items = ['🪩', '🍔', '🍟', '🍕', '🌭', '🥪', '🌮', '🍦'];
+              var item = items[Math.floor(Math.random() * items.length)]; 
+              document.write(item);
+            </script>
+          </span>
+          <a href="mailto:getlunchagogo@gmail.com">Email us!</a>
+        </p>
+        <p class="spacer">&nbsp;</p>
+        <div class="social col">
+          <ul>
+            <li><a href="https://www.facebook.com/lunchagogo"><img src="/img/social_facebook_square.svg" alt="Lunch a Go-Go on Facebook"></a></li>
+            <li><a href="https://www.instagram.com/lunchagogo"><img src="/img/social_instagram.svg" alt="Lunch a Go-Go on Instagram"></a></li>
+            <li class="empty">
+              <!--<a href="#"><img src="/img/social_youtube_square.svg"</a>-->&nbsp;
+            </li>
+          </ul>
+        </div>
+        <p class="spacer">&nbsp;</p>
+      </section>
+    </main>
+    <div id="end"></div>
+    </div>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159425324-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'UA-159425324-1');
+    </script>
+  </body>
+
+</html>
