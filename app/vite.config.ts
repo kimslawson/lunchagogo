@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-cloudflare';
+import adapter from '@sveltejs/adapter-auto';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
@@ -13,8 +13,9 @@ export default defineConfig({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 
-			// Deploys to Cloudflare Pages (serverless, free tier, scales).
-			// Swap for adapter-netlify / adapter-vercel / adapter-node — see README.
+			// adapter-auto detects Netlify / Cloudflare Pages / Vercel at deploy time,
+			// so the same code ships to any of them with no change. Pin a specific
+			// adapter (adapter-netlify / -cloudflare / -vercel / -node) if you prefer.
 			adapter: adapter(),
 
 			// Content-Security-Policy, managed by SvelteKit (it adds nonces/hashes for

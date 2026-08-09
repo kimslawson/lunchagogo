@@ -68,6 +68,8 @@ the splash stays deployable on its own.
 
 ## Setup
 
+> **New to serverless hosting? Follow [`SETUP.md`](./SETUP.md) — the same steps, click by click.**
+
 ### 1. Create a Supabase project
 Grab the **Project URL** and **anon key** from Project Settings → API.
 
@@ -103,13 +105,11 @@ supabase secrets set \
 ```
 Without it, everything works except notifications (the app degrades gracefully).
 
-### 6. Deploy the app to Cloudflare Pages
-Connect the repo, set the build to this `app/` directory (`npm run build`, output `.svelte-kit/cloudflare`),
-and add the `PUBLIC_*` env vars in the Pages dashboard. Set the Supabase Auth redirect URL to
-`https://your-domain/auth/callback`.
-
-> Prefer Netlify or Vercel? Swap the adapter in `vite.config.ts`
-> (`@sveltejs/adapter-netlify` / `-vercel`) — one line.
+### 6. Deploy the app (Netlify / Cloudflare Pages / Vercel)
+Connect the repo, set the **base directory** to `app`, build command `npm run build`, and
+add the `PUBLIC_*` env vars in the host dashboard. Set the Supabase Auth redirect URL to
+`https://your-domain/auth/callback`. The app uses `adapter-auto`, so all three hosts work
+with no code change. Full click-by-click walkthrough: [`SETUP.md`](./SETUP.md).
 
 ---
 
