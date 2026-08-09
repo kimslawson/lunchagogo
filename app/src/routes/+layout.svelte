@@ -1,16 +1,28 @@
 <script lang="ts">
 	import '../app.css';
 	import { onMount } from 'svelte';
-	import { invalidate } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import { page } from '$app/state';
+	import { supabase } from '$lib/supabaseClient';
 
 	let { data, children } = $props();
-	let supabase = $derived(data.supabase);
 
+	const PROTECTED = new Set(['feed', 'map', 'me', 'truck', 'onboarding']);
 	const seg = $derived(page.url.pathname.split('/')[1] ?? '');
 	const isAuthPage = $derived(seg === 'login' || seg === 'signup' || seg === 'auth');
 	const showChrome = $derived(!!data.user && !isAuthPage);
 	const role = $derived(data.profile?.role ?? 'foodie');
+
+	// Client-side route guard (no server to do it for us).
+	$effect(() => {
+		const s = page.url.pathname.split('/')[1] ?? '';
+		if (!data.user && PROTECTED.has(s)) {
+			const next = encodeURIComponent(page.url.pathname + page.url.search);
+			goto(`/login?next=${next}`, { replaceState: true });
+		} else if (data.user && (s === 'login' || s === 'signup')) {
+			goto(role === 'truck' ? '/truck' : '/map', { replaceState: true });
+		}
+	});
 
 	type NavItem = { href: string; ico: string; label: string; exact?: boolean };
 	const nav = $derived<NavItem[]>(

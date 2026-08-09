@@ -1,13 +1,48 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
+	import { toNum } from '$lib/upload';
 	import type { MenuItem } from '$lib/types';
-	let { data, form } = $props();
+
+	let { data } = $props();
+	let error = $state('');
 
 	const sections = $derived.by(() => {
 		const groups: Record<string, MenuItem[]> = {};
 		for (const m of data.menu) (groups[m.section || 'Menu'] ??= []).push(m);
 		return Object.entries(groups);
 	});
+
+	async function addItem(e: SubmitEvent) {
+		e.preventDefault();
+		error = '';
+		const form = e.target as HTMLFormElement;
+		const fd = new FormData(form);
+		const name = String(fd.get('name') ?? '').trim().slice(0, 80);
+		if (!name) return (error = 'Give the item a name.');
+
+		const { error: err } = await supabase.from('menu_items').insert({
+			truck_id: data.truck!.id,
+			name,
+			section: String(fd.get('section') ?? '').trim().slice(0, 40) || 'Menu',
+			description: String(fd.get('description') ?? '').trim().slice(0, 200) || null,
+			price: toNum(fd.get('price')),
+			sort_order: Math.floor(Date.now() / 1000)
+		});
+		if (err) return (error = err.message);
+		form.reset();
+		await invalidateAll();
+	}
+
+	async function toggle(id: string, to: boolean) {
+		await supabase.from('menu_items').update({ is_available: to }).eq('id', id);
+		await invalidateAll();
+	}
+
+	async function remove(id: string) {
+		await supabase.from('menu_items').delete().eq('id', id);
+		await invalidateAll();
+	}
 </script>
 
 <svelte:head><title>Menu · Lunch a Go-Go</title></svelte:head>
@@ -15,11 +50,11 @@
 <h1>Your menu</h1>
 <p class="data muted">Your permanent lineup. Sold out? Toggle an item off without deleting it.</p>
 
-{#if form?.error}<div class="flash err">{form.error}</div>{/if}
+{#if error}<div class="flash err">{error}</div>{/if}
 
 <div class="card">
 	<div class="card-head"><h3 class="mb0">Add an item</h3></div>
-	<form method="POST" action="?/add" use:enhance>
+	<form onsubmit={addItem}>
 		<div class="field-row">
 			<div class="field" style="flex:2"><label for="name">Item</label><input id="name" name="name" required placeholder="Carne Asada Taco" /></div>
 			<div class="field"><label for="price">Price</label><input id="price" name="price" inputmode="decimal" placeholder="3.50" /></div>
@@ -44,15 +79,8 @@
 							{#if m.price != null}<span class="price"> ${Number(m.price).toFixed(2)}</span>{/if}
 							{#if m.description}<div class="tiny muted data">{m.description}</div>{/if}
 						</div>
-						<form method="POST" action="?/toggle" use:enhance>
-							<input type="hidden" name="id" value={m.id} />
-							<input type="hidden" name="to" value={(!m.is_available).toString()} />
-							<button class="btn btn-sm" title="Toggle available">{m.is_available ? '✅' : '🚫'}</button>
-						</form>
-						<form method="POST" action="?/remove" use:enhance>
-							<input type="hidden" name="id" value={m.id} />
-							<button class="btn btn-sm btn-danger" title="Delete">✕</button>
-						</form>
+						<button class="btn btn-sm" title="Toggle available" onclick={() => toggle(m.id, !m.is_available)}>{m.is_available ? '✅' : '🚫'}</button>
+						<button class="btn btn-sm btn-danger" title="Delete" onclick={() => remove(m.id)}>✕</button>
 					</div>
 				{/each}
 			</div>

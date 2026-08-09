@@ -1,143 +1,95 @@
-# Lunch a Go-Go — web app
+# Lunch a Go-Go — web app (Option B: static SPA)
 
-The real food-truck tracking app: **two modes (foodie + food truck)**, chronological
-feeds, two-way GPS, and free push notifications. Built to start at **$0/mo** and scale.
+> **This branch is the static-SPA build**, meant to be hosted on **CloudCannon**
+> (or any static host) right alongside your splash page — no serverless functions.
+> The hardened, server-side-session version lives on branch
+> **`claude/lunchagogo-webapp-bilao2`** (Option A). Same features, same backend;
+> they differ only in where auth/session handling runs. See "Which one?" below.
 
-This lives in `app/`, separate from the marketing splash page at the repo root, so
-the splash stays deployable on its own.
+The food-truck tracking app: **two modes (foodie + food truck)**, chronological
+feeds, two-way GPS, free push notifications. Starts at **$0/mo**.
 
----
-
-## Stack (and why)
-
-| Layer          | Choice                                   | Why it fits a tight budget + "real" auth |
-| -------------- | ---------------------------------------- | ---------------------------------------- |
-| Frontend       | **SvelteKit** (Svelte 5) + PWA           | Tiny bundles, serverless deploy, service worker for push |
-| Hosting        | **Cloudflare Pages** (`adapter-cloudflare`) | Free static + serverless functions, scales |
-| Auth           | **Supabase Auth (GoTrue)**               | Battle-tested, audited. Not hand-rolled. bcrypt hashing, JWT sessions, PKCE |
-| Database       | **Supabase Postgres + PostGIS**          | Real geo ("nearby trucks"), SQL, generous free tier |
-| Authorization  | **Row-Level Security** on every table    | Rules enforced *in the DB* — a bug in app code can't leak data |
-| Images         | **Supabase Storage** (public `media` bucket) | Bundled, simplest; swap to Cloudflare R2 later (see below) |
-| Maps           | **Leaflet + OpenStreetMap**              | Free, no API key, no billing account |
-| Notifications  | **Web Push (VAPID)** via a Supabase Edge Function | $0 forever; no SMS bills |
-
-### Cost: $0 to start
-
-- **Supabase Free**: 500 MB database, 1 GB file storage, 50k monthly active users, Edge Functions included.
-- **Cloudflare Pages Free**: unlimited static requests, 100k serverless requests/day.
-- **Web Push / Leaflet / OpenStreetMap**: free.
-- First real bill is **Supabase Pro at $25/mo**, only once you outgrow the free tier — i.e. after you have real traction.
+Lives in `app/`, separate from the marketing splash at the repo root.
 
 ---
 
-## Options you asked about
+## Which one? (A vs B)
 
-**Image + data hosting — start simple, swap when it grows:**
-- *Now:* **Supabase Storage** — one integrated bill, RLS-scoped, 1 GB free. Already wired.
-- *At scale:* **Cloudflare R2** — **zero egress fees** (huge once foodies are loading lots of photos), 10 GB free. To switch, upload to R2 from the same server actions and store the public URL; the rest of the app doesn't change because we only ever store a URL string.
+| | **A — `…-bilao2`** | **B — this branch** |
+| --- | --- | --- |
+| Build | SvelteKit + tiny serverless functions | **100% static files** |
+| Hosts on | Netlify / Cloudflare Pages / Vercel | **CloudCannon**, Netlify, GitHub Pages… |
+| Auth/session | handled server-side (a server boundary to harden) | handled in the browser |
+| Session token | in cookies, server-set | in the browser (localStorage) |
+| Your **data** | protected by database RLS | **protected by database RLS** (same) |
+| Best when | you want max hardening | you want dead-simple static hosting |
 
-**Notifications — Web Push now, SMS later if you want it:**
-- *Now:* **Web Push** (implemented) — free, works on Android + installed iOS PWAs (16.4+). Covers "a truck you follow just went live / is near."
-- *Optional upgrade:* **Twilio SMS** (~$0.008/text + ~$1.15/mo per number) or **Amazon SNS**. The notification layer is isolated in one Edge Function (`supabase/functions/notify`), so adding an SMS channel is additive — you don't touch the app.
+Both are genuinely usable. B's tradeoff: if the app ever had an XSS bug, the
+session token is reachable by page JS — so an attacker could hijack *that one
+user's* session. Your data stays protected either way, because Postgres Row-Level
+Security enforces access no matter where the request comes from.
 
-**Frontend framework:** SvelteKit was chosen for small bundles + easy serverless. The whole thing ports to Next.js/React if you ever want the bigger ecosystem, but you'd trade bundle size and boilerplate.
+---
+
+## Stack
+
+| Layer | Choice |
+| --- | --- |
+| Frontend | **SvelteKit → static** (`adapter-static`, SPA) + PWA |
+| Hosting | **CloudCannon** / any static host (just serves files) |
+| Auth | **Supabase Auth** (GoTrue), PKCE flow, in the browser |
+| Database | **Supabase Postgres + PostGIS** |
+| Authorization | **Row-Level Security** on every table (this is what protects data) |
+| Images | **Supabase Storage** (public `media` bucket) |
+| Maps | **Leaflet + OpenStreetMap** (free) |
+| Notifications | **Web Push** via a Supabase Edge Function (free) |
+
+**Cost: $0 to start** — Supabase free tier + free static hosting + free push.
 
 ---
 
 ## What's built
 
-**Foodie**
-- Sign up / log in (secure), pick role at signup
-- **Nearby map** of live trucks (PostGIS radius search) + list with distances
-- **Follow / unfollow** trucks
-- **Chronological feed** of specials + check-ins from trucks you follow (no algorithm)
-- **"Grab some grub"** check-in: photo + caption posted to the truck's feed, location fuzzed to ~1 km for privacy
-- Free **push notifications** opt-in
-- No comments; no foodie-to-foodie following (by design)
-
-**Food truck**
-- Dashboard with live status + follower / check-in / special counts
-- **Go live** with GPS (precise — trucks *want* to be found), one live spot at a time
-- **Menu** (permanent, sections, sold-out toggle)
-- **Specials** (photo, price, optional expiry) → hits followers' feeds
-- **Hours** (weekly)
-- **Schedule** (future stops via date/time picker)
-- **Patrons** — who grabs your grub, ranked by check-ins, with "follows" flag (the "who's a good investment" view). Two-way GPS: they find you, you learn your regulars.
+Everything Option A has — foodie map/feed/follow/check-in/push, and truck
+go-live/menu/specials/hours/schedule/patrons — just with the data and auth calls
+running in the browser via `supabase-js`. UI, database, and the push Edge Function
+are identical.
 
 ---
 
 ## Setup
 
-> **New to serverless hosting? Follow [`SETUP.md`](./SETUP.md) — the same steps, click by click.**
+> **Follow [`SETUP.md`](./SETUP.md) for the click-by-click CloudCannon walkthrough.**
 
-### 1. Create a Supabase project
-Grab the **Project URL** and **anon key** from Project Settings → API.
-
-### 2. Run the migrations
-In the Supabase **SQL editor**, run in order:
-1. `supabase/migrations/0001_init.sql` — tables, RLS, PostGIS, RPC functions
-2. `supabase/migrations/0002_storage.sql` — the public `media` bucket + storage policies
-
-(Or with the Supabase CLI: `supabase db push`.)
-
-### 3. Environment
-```sh
-cp .env.example .env
-```
-Fill in `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, and (for push) `PUBLIC_VAPID_PUBLIC_KEY`.
-
-Generate a VAPID keypair once:
-```sh
-npx web-push generate-vapid-keys
-```
-
-### 4. Run
-```sh
-npm install
-npm run dev
-```
-
-### 5. Deploy the push sender (optional but recommended — it's free)
-```sh
-supabase functions deploy notify
-supabase secrets set \
-  VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=mailto:you@example.com
-```
-Without it, everything works except notifications (the app degrades gracefully).
-
-### 6. Deploy the app (Netlify / Cloudflare Pages / Vercel)
-Connect the repo, set the **base directory** to `app`, build command `npm run build`, and
-add the `PUBLIC_*` env vars in the host dashboard. Set the Supabase Auth redirect URL to
-`https://your-domain/auth/callback`. The app uses `adapter-auto`, so all three hosts work
-with no code change. Full click-by-click walkthrough: [`SETUP.md`](./SETUP.md).
+Short version:
+1. Create a Supabase project; run `supabase/migrations/0001_init.sql` then `0002_storage.sql`.
+2. `cp .env.example .env` and fill `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`,
+   `PUBLIC_VAPID_PUBLIC_KEY`.
+3. `npm install && npm run dev` to try locally.
+4. `npm run build` → the `build/` folder is a complete static site. Host it (CloudCannon,
+   Netlify drag-drop, anywhere).
+5. (Optional, free) deploy the `notify` Edge Function for push — see `SETUP.md`.
 
 ---
 
-## Security notes (the "no vibecoded auth" part)
+## Security notes
 
-- **Auth is Supabase GoTrue**, not custom. Passwords are hashed server-side (bcrypt); we never see or store them.
-- **Sessions are re-validated** on every request in `hooks.server.ts` via `getUser()` (calls the Auth server), not just by trusting the cookie.
-- **Row-Level Security is on for every table**, deny-by-default. Writes are gated to the owner; foodies are private from each other; trucks can read their own patrons. Cross-user data access is blocked at the database, so an app bug can't leak it.
-- **Storage** writes are scoped to `<uid>/…` paths; reads are public (feed photos). 5 MB cap, images only.
-- **CSP** is managed by SvelteKit (`vite.config.ts`), plus `X-Frame-Options`, `nosniff`, `Referrer-Policy`, and a locked-down `Permissions-Policy` in `hooks.server.ts`.
-- Server secrets (VAPID private key, service-role key) are **never** shipped to the browser and never used by the SvelteKit app — only by the Edge Function.
+- **Auth is Supabase GoTrue**, not hand-rolled. Passwords hashed server-side (bcrypt).
+- **Row-Level Security on every table**, deny-by-default — the real guard on your data,
+  and identical to Option A.
+- **Storage** writes scoped to `<uid>/…`; images only, 5 MB cap.
+- **Security headers** ship in `static/_headers` (CloudCannon/Netlify honor it); CSP is
+  emitted as a `<meta>` tag.
+- The session token lives in the browser here (that's the A-vs-B difference above). If
+  that matters for your threat model, deploy Option A instead — same repo, other branch.
 
-**Turn these on in the Supabase dashboard** (free, one click each):
-- **Confirm email** (Authentication → Providers → Email) — code already handles the "check your email" flow.
-- **Leaked-password protection** (Authentication → Policies) — rejects passwords found in breaches.
-- Consider a **Cloudflare Turnstile** on signup if you see bot abuse (free).
+**Turn on in Supabase (free):** Confirm email, and leaked-password protection.
 
 ---
 
-## Data model
+## Data model & scaling
 
-`profiles` (role: foodie|truck, private PII) · `trucks` (public) · `truck_locations`
-(live + scheduled, PostGIS `geog`) · `menu_items` · `specials` · `truck_hours` ·
-`follows` (foodie→truck; trucks may read their followers) · `checkins` (public feed,
-name/avatar snapshotted, fuzzed coords) · `push_subscriptions` (private).
-
-RPC: `nearby_trucks()`, `get_following_feed()` (chronological), `get_truck_patrons()` (owner-guarded).
-
-### Scaling notes
-- Nearby search uses a **GiST index** on `geog` — fine well beyond MVP.
-- Proximity pings currently fire when a truck **goes live**. For continuous "truck moved near me" alerts at scale, add a scheduled job (Supabase `pg_cron` + the same `notify` function) that diffs follower locations against live trucks — additive, no schema change.
+Same as Option A — see the schema in `supabase/migrations/0001_init.sql`
+(`profiles`, `trucks`, `truck_locations` with PostGIS, `menu_items`, `specials`,
+`truck_hours`, `follows`, `checkins`, `push_subscriptions`) and the RPCs
+`nearby_trucks`, `get_following_feed`, `get_truck_patrons`.

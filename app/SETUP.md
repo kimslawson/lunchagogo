@@ -1,140 +1,141 @@
-# Setup & Deploy — Lunch a Go-Go (Option A: hardened / serverless)
+# Setup & Deploy — Lunch a Go-Go (Option B: static SPA on CloudCannon)
 
-Plain-English, click-by-click. You need **two free accounts** — Supabase (the
-backend) and a frontend host (Netlify recommended). No servers to manage, no FTP.
-Budget: **~20 minutes**, **$0**.
+This is the **static** build — plain files, no server — so it hosts on CloudCannon
+right next to your splash page. You still need a **Supabase** account (the backend
+that runs itself). Budget: **~20 minutes, $0**.
 
-Nothing here is hosted by you in the old sense — Supabase is an account that runs
-itself, and the host auto-deploys from GitHub every time code is pushed.
+> Same backend and features as Option A; only the hosting differs. If you want the
+> more-hardened server-side-session version, use branch `claude/lunchagogo-webapp-bilao2`.
 
 ---
 
 ## Part 1 — Supabase (the backend)
 
 ### 1a. Make the project
-1. Go to **supabase.com** → **Start your project** → sign in with GitHub.
-2. **New project.** Name it `lunchagogo`. Pick a **database password** (save it in your
-   password manager — you rarely need it, but don't lose it). Choose the region closest
-   to your trucks. Click **Create new project** and wait ~2 minutes.
+1. **supabase.com** → **Start your project** → sign in with GitHub.
+2. **New project.** Name it `lunchagogo`, set a database password (save it), pick the
+   nearest region, **Create**. Wait ~2 minutes.
 
-### 1b. Create the tables (run the SQL)
+### 1b. Create the tables
 1. Left sidebar → **SQL Editor** → **New query**.
-2. Open `app/supabase/migrations/0001_init.sql` from this repo, copy **all** of it,
-   paste into the editor, click **Run**. You should see "Success."
-3. New query again. Do the same with `app/supabase/migrations/0002_storage.sql`, **Run**.
-
-That's your whole database, security rules, and photo storage — done.
+2. Copy all of `app/supabase/migrations/0001_init.sql`, paste, **Run** (expect "Success").
+3. New query → do the same with `app/supabase/migrations/0002_storage.sql` → **Run**.
 
 ### 1c. Grab your keys
-1. Left sidebar → **Project Settings** (gear) → **API**.
-2. Copy two things — you'll paste them in Part 3:
-   - **Project URL** (looks like `https://abcd1234.supabase.co`)
-   - **anon public** key (a long string). This one is *safe* to put in the browser;
-     your Row-Level Security rules are what actually protect data.
+**Project Settings (gear) → API**, copy:
+- **Project URL** (`https://abcd1234.supabase.co`)
+- **anon public** key — safe for the browser; RLS is what guards your data.
 
-### 1d. Turn on the good auth settings (all free, one click each)
-1. **Authentication → Providers → Email**: make sure **Confirm email** is ON. (The app
-   already handles the "check your email" screen.)
-2. **Authentication → Policies** (or **Settings**): enable **leaked-password protection**
-   so breached passwords are rejected.
-3. **Authentication → URL Configuration**: leave this for now — you'll add your live URL
-   in Part 4.
+### 1d. Auth settings (free, recommended)
+- **Authentication → Providers → Email**: **Confirm email** ON.
+- **Authentication → Policies/Settings**: enable **leaked-password protection**.
+- **Authentication → URL Configuration**: you'll set your live URL in Part 4.
 
 ---
 
-## Part 2 — Web Push keys (optional, free — skip if you don't want notifications yet)
-
-In a terminal:
+## Part 2 — Web Push keys (optional, free)
 ```sh
 npx web-push generate-vapid-keys
 ```
-It prints a **Public Key** and **Private Key**. Keep them handy for Part 3 and Part 5.
+Keep the **public** and **private** keys for Part 3 and Part 6.
 
 ---
 
-## Part 3 — Run it on your own computer first
-
+## Part 3 — Run it locally first
 ```sh
 git clone https://github.com/kimslawson/lunchagogo.git
 cd lunchagogo/app
-git checkout claude/lunchagogo-webapp-bilao2
+git checkout claude/lunchagogo-webapp-static
 cp .env.example .env
 ```
-
-Open `.env` in a text editor and fill in:
+Edit `.env`:
 ```
-PUBLIC_SUPABASE_URL="...your Project URL..."
-PUBLIC_SUPABASE_ANON_KEY="...your anon public key..."
-PUBLIC_VAPID_PUBLIC_KEY="...your VAPID public key (or leave the placeholder)..."
+PUBLIC_SUPABASE_URL="...Project URL..."
+PUBLIC_SUPABASE_ANON_KEY="...anon public key..."
+PUBLIC_VAPID_PUBLIC_KEY="...VAPID public key (or leave placeholder)..."
 ```
-
 Then:
 ```sh
 npm install
 npm run dev
 ```
-Open the URL it prints (usually `http://localhost:5173`). Make a food-truck account, then
-a foodie account in another browser, and click around. If that works, you're ready to
-put it online.
+Open the printed URL, make a truck account and a foodie account, click around.
+
+### Make the static files
+```sh
+npm run build
+```
+This produces **`app/build/`** — a complete static website (`index.html`, `404.html`,
+`_app/`, fonts, images, `_headers`, `_redirects`). That folder is the whole app.
 
 ---
 
-## Part 4 — Put it online (Netlify)
+## Part 4 — Deploy to CloudCannon (alongside your splash)
 
-Your code is already on GitHub, so this is just clicking.
+Your splash is one CloudCannon **site**; the app becomes a **second site** on the same
+repo, different branch. Two ways — pick whichever feels comfortable.
 
-1. Go to **netlify.com** → sign in with GitHub → **Add new site → Import an existing project**.
-2. Pick your **lunchagogo** repo.
-3. **Branch to deploy:** `claude/lunchagogo-webapp-bilao2`.
-4. **Base directory:** `app`  ← important, because the app lives in the `app/` subfolder.
-5. **Build command:** `npm run build` (Netlify usually pre-fills this).
-6. **Publish directory:** let Netlify auto-detect (`build`). Leave it if it's filled in.
-7. **Add environment variables** (before the first deploy, or under *Site configuration →
-   Environment variables* after): add the same three from your `.env` —
-   `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `PUBLIC_VAPID_PUBLIC_KEY`.
-8. Click **Deploy**. In ~2 minutes you get a URL like `https://lunchagogo-xyz.netlify.app`.
+### Option 1 — Let CloudCannon build it (auto-deploys on every push) ✅ recommended
+1. In CloudCannon: **Create Site → Connect** your `lunchagogo` repo.
+2. **Branch:** `claude/lunchagogo-webapp-static`.
+3. In the site's **Settings → Build**:
+   - **Base/source path:** `app`  ← the app lives in this subfolder.
+   - **Build command:** `npm run build`
+   - **Output path:** `build`
+   - **Environment:** Node (18+).
+   - **Environment variables:** add `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`,
+     `PUBLIC_VAPID_PUBLIC_KEY` (needed at build time).
+4. Save & build. CloudCannon serves the result. Every push to this branch rebuilds.
 
-### Tell Supabase about your live URL
-Back in Supabase → **Authentication → URL Configuration**:
-- **Site URL:** your Netlify URL.
-- **Redirect URLs:** add `https://YOUR-SITE.netlify.app/auth/callback`.
-(Add your custom domain here too once you set one up — see below.)
+*(CloudCannon's exact labels move around; if the Node build fights you, use Option 2 —
+it always works.)*
 
-From now on, **every `git push` to that branch auto-rebuilds and redeploys.** No FTP,
-no uploading files.
+### Option 2 — Build locally, upload the folder (the FTP-feeling way)
+1. `npm run build` (Part 3).
+2. Put the **contents of `app/build/`** wherever you host static files:
+   - **CloudCannon:** create a site from a folder / upload the `build` contents, or
+   - **Netlify:** drag the `app/build` folder onto **netlify.com → Add new site →
+     Deploy manually**. Instant URL, no account fuss.
+3. Re-build and re-upload whenever you change the app.
 
-> **Prefer Cloudflare Pages or Vercel?** Same idea — connect the repo, set the base
-> directory to `app`, build command `npm run build`, add the three env vars. The app uses
-> `adapter-auto`, so it works on all three with no code change.
->
-> **Want the FTP-like option?** Run `npm run build` locally, then drag the resulting
-> `app/build` folder onto Netlify's **Deploys → Drag and drop** area. (You'll re-drag on
-> each update, so the GitHub connection above is nicer.)
+### Tell Supabase your live URL
+Supabase → **Authentication → URL Configuration**:
+- **Site URL:** your app's URL.
+- **Redirect URLs:** add `https://YOUR-APP-URL/auth/callback`.
 
 ---
 
-## Part 5 — Turn on push notifications (optional, free)
+## Part 5 — SPA routing note (important for static hosts)
 
-Requires the [Supabase CLI](https://supabase.com/docs/guides/cli):
+Because this is a single-page app, the host must serve the app shell for *any* path
+(so refreshing on `/trucks/taco-truck` works). This repo already handles it two ways:
+- **`static/_redirects`** (`/* /index.html 200`) — CloudCannon & Netlify honor this.
+- **`build/404.html`** — a copy of the shell, for hosts that fall back to 404.
+
+If deep links 404 on refresh, make sure your host is serving `index.html` (or `404.html`)
+for unknown routes — that's the one static-host gotcha.
+
+---
+
+## Part 6 — Push notifications (optional, free)
+Needs the [Supabase CLI](https://supabase.com/docs/guides/cli):
 ```sh
 cd app
-supabase link --project-ref YOUR-PROJECT-REF     # the abcd1234 from your URL
+supabase link --project-ref YOUR-PROJECT-REF
 supabase functions deploy notify
 supabase secrets set \
   VAPID_PUBLIC_KEY="...public..." \
   VAPID_PRIVATE_KEY="...private..." \
   VAPID_SUBJECT="mailto:getlunchagogo@gmail.com"
 ```
-That's it — when a truck goes live, followers who opted in get a free push. Without this,
-everything else still works; the app just skips the notification.
+The app calls this function from the browser when a truck goes live. Without it,
+everything else still works.
 
 ---
 
 ## Custom domain (e.g. `app.lunchagogo.app`)
-
-In Netlify → **Domain management → Add a domain** → follow the DNS steps (a CNAME).
-Then add that domain to Supabase's **Redirect URLs** (Part 4). Your splash page keeps
-living at `lunchagogo.app`; the app lives at a subdomain.
+Point a subdomain at your app's CloudCannon site (CloudCannon → Domains), keeping the
+splash at `lunchagogo.app`. Then add that subdomain to Supabase's **Redirect URLs**.
 
 ---
 
@@ -142,12 +143,11 @@ living at `lunchagogo.app`; the app lives at a subdomain.
 
 | Symptom | Fix |
 | --- | --- |
-| Build fails: "PUBLIC_SUPABASE_URL is not exported" | You forgot the env vars in Netlify (step 7), or `.env` locally. |
-| Login works but refresh logs me out | Supabase **Site URL / Redirect URLs** don't match your live URL (Part 4). |
-| "Row level security" errors on save | The migrations didn't fully run — re-run `0001_init.sql`. |
-| Photos won't upload | Re-run `0002_storage.sql`; confirm a **media** bucket exists under Storage. |
-| No push notifications | Part 5 not done, or the user didn't tap "Turn on notifications" in **Me**. iOS needs the app **added to the home screen** first. |
-| Map is blank | Allow **location** when the browser asks; try a bigger search radius. |
+| Blank page / build fails on missing `PUBLIC_SUPABASE_URL` | Set the three env vars (CloudCannon build settings, or `.env` locally). |
+| Refreshing a deep link 404s | Host isn't doing SPA fallback — see Part 5. |
+| Login works, refresh logs me out | Supabase **Site URL / Redirect URLs** don't match your live URL. |
+| Photos won't upload | Re-run `0002_storage.sql`; confirm a **media** bucket exists. |
+| No push notifications | Part 6 not done, or user didn't tap "Turn on notifications" in **Me**. iOS needs the app added to the home screen first. |
+| Map blank | Allow **location** when asked; try a bigger radius. |
 
-Questions about any step? The app's architecture and security notes are in
-[`README.md`](./README.md).
+Architecture & the A-vs-B security tradeoff: [`README.md`](./README.md).

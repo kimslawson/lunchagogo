@@ -1,9 +1,38 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
 	import { DAYS, type TruckHours } from '$lib/types';
-	let { data, form } = $props();
+
+	let { data } = $props();
+	let error = $state('');
+	let saved = $state(false);
 
 	const byDay = $derived(new Map<number, TruckHours>(data.hours.map((h) => [h.day_of_week, h])));
+
+	async function save(e: SubmitEvent) {
+		e.preventDefault();
+		error = '';
+		saved = false;
+		const fd = new FormData(e.target as HTMLFormElement);
+		const rows = Array.from({ length: 7 }, (_, d) => {
+			const closed = fd.get(`closed_${d}`) === 'on';
+			const open = String(fd.get(`open_${d}`) ?? '');
+			const close = String(fd.get(`close_${d}`) ?? '');
+			return {
+				truck_id: data.truck!.id,
+				day_of_week: d,
+				is_closed: closed,
+				open_time: closed || !open ? null : open,
+				close_time: closed || !close ? null : close
+			};
+		});
+		const { error: err } = await supabase
+			.from('truck_hours')
+			.upsert(rows, { onConflict: 'truck_id,day_of_week' });
+		if (err) return (error = err.message);
+		saved = true;
+		await invalidateAll();
+	}
 </script>
 
 <svelte:head><title>Hours · Lunch a Go-Go</title></svelte:head>
@@ -11,11 +40,11 @@
 <h1>Regular hours</h1>
 <p class="data muted">Your typical week. For one-off spots and times, use <a href="/truck/schedule">Schedule</a>.</p>
 
-{#if form?.error}<div class="flash err">{form.error}</div>{/if}
-{#if form?.saved}<div class="flash ok">Hours saved!</div>{/if}
+{#if error}<div class="flash err">{error}</div>{/if}
+{#if saved}<div class="flash ok">Hours saved!</div>{/if}
 
 <div class="card">
-	<form method="POST" action="?/save" use:enhance>
+	<form onsubmit={save}>
 		<div class="stack">
 			{#each DAYS as label, d (d)}
 				{@const h = byDay.get(d)}

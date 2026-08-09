@@ -1,23 +1,22 @@
-import { createBrowserClient, createServerClient, isBrowser } from '@supabase/ssr';
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { supabase } from '$lib/supabaseClient';
 import type { LayoutLoad } from './$types';
-import type { Database } from '$lib/database.types';
 
-export const load: LayoutLoad = async ({ data, depends, fetch }) => {
+// Static SPA: render only in the browser, prerender nothing.
+export const ssr = false;
+export const prerender = false;
+
+export const load: LayoutLoad = async ({ depends }) => {
 	depends('supabase:auth');
-
-	const supabase = isBrowser()
-		? createBrowserClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-				global: { fetch }
-			})
-		: createServerClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-				global: { fetch },
-				cookies: { getAll: () => data.cookies }
-			});
 
 	const {
 		data: { session }
 	} = await supabase.auth.getSession();
 
-	return { supabase, session, user: data.user, profile: data.profile };
+	let profile = null;
+	if (session?.user) {
+		const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+		profile = data;
+	}
+
+	return { supabase, session, user: session?.user ?? null, profile };
 };

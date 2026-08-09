@@ -1,16 +1,19 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
 	import { getPosition } from '$lib/geo';
 	import { relTime } from '$lib/time';
 
-	let { data, form } = $props();
+	let { data } = $props();
 
 	let lat = $state<number | null>(data.live?.lat ?? null);
 	let lng = $state<number | null>(data.live?.lng ?? null);
 	let address = $state(data.live?.address ?? '');
 	let locating = $state(false);
 	let geoErr = $state('');
+	let error = $state('');
+	let flash = $state('');
 
 	async function useMyLocation() {
 		locating = true;
@@ -25,6 +28,45 @@
 		locating = false;
 	}
 
+	async function goLive(e: SubmitEvent) {
+		e.preventDefault();
+		error = '';
+		flash = '';
+		if (lat == null || lng == null) return (error = 'Tap “Use my location” first.');
+
+		await supabase.from('truck_locations').update({ is_live: false }).eq('truck_id', data.truck!.id).eq('is_live', true);
+		const { error: err } = await supabase.from('truck_locations').insert({
+			truck_id: data.truck!.id,
+			lat,
+			lng,
+			address: address || null,
+			is_live: true,
+			starts_at: new Date().toISOString()
+		});
+		if (err) return (error = err.message);
+
+		try {
+			await supabase.functions.invoke('notify', {
+				body: {
+					truck_id: data.truck!.id,
+					title: `${data.truck!.name} is out! 🚚`,
+					body: address ? `Now at ${address}` : 'Rolling now — come grab some grub!',
+					url: `/trucks/${data.truck!.slug}`
+				}
+			});
+		} catch {
+			/* notifications optional */
+		}
+		flash = 'You’re live! Followers with alerts on just got pinged. 📣';
+		await invalidateAll();
+	}
+
+	async function endLive() {
+		await supabase.from('truck_locations').update({ is_live: false }).eq('truck_id', data.truck!.id).eq('is_live', true);
+		flash = 'You’re offline now.';
+		await invalidateAll();
+	}
+
 	onMount(() => {
 		if (!data.live) useMyLocation();
 	});
@@ -34,25 +76,22 @@
 
 <h1>Where are you?</h1>
 
-{#if form?.error}<div class="flash err">{form.error}</div>{/if}
-{#if form?.live === true}<div class="flash ok">You’re live! Followers with alerts on just got pinged. 📣</div>{/if}
-{#if form?.live === false}<div class="flash ok">You’re offline now.</div>{/if}
+{#if error}<div class="flash err">{error}</div>{/if}
+{#if flash}<div class="flash ok">{flash}</div>{/if}
 
 {#if data.live}
 	<div class="card">
 		<span class="badge live dot">LIVE NOW</span>
 		<p class="data" style="margin:.4rem 0">📍 {data.live.address ?? `${data.live.lat}, ${data.live.lng}`}</p>
 		<div class="tiny muted">Live since {relTime(data.live.created_at)}</div>
-		<form method="POST" action="?/endLive" use:enhance style="margin-top:.6rem">
-			<button class="btn btn-danger">End shift (go offline)</button>
-		</form>
+		<button class="btn btn-danger" style="margin-top:.6rem" onclick={endLive}>End shift (go offline)</button>
 	</div>
 	<hr class="rule" />
 	<h3>Move to a new spot</h3>
 {/if}
 
 <div class="card">
-	<form method="POST" action="?/goLive" use:enhance>
+	<form onsubmit={goLive}>
 		<button type="button" class="btn btn-blue" onclick={useMyLocation} disabled={locating} style="margin-bottom:.7rem">
 			{locating ? 'Locating…' : '📍 Use my location'}
 		</button>
@@ -64,12 +103,10 @@
 
 		<div class="field">
 			<label for="address">Address / cross-streets</label>
-			<input id="address" name="address" maxlength="140" bind:value={address} placeholder="5th &amp; Main, by the park" />
+			<input id="address" maxlength="140" bind:value={address} placeholder="5th &amp; Main, by the park" />
 			<div class="hint">Shown to foodies. Your exact GPS pin comes from the button above.</div>
 		</div>
 
-		<input type="hidden" name="lat" value={lat ?? ''} />
-		<input type="hidden" name="lng" value={lng ?? ''} />
 		<button class="btn btn-primary btn-lg" type="submit" disabled={lat == null}>
 			{data.live ? 'Update my spot' : '🚚 Go live'}
 		</button>

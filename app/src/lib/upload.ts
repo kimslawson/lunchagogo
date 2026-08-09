@@ -1,13 +1,11 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '$lib/database.types';
+import { supabase } from '$lib/supabaseClient';
 
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_BYTES = 5 * 1024 * 1024;
 
 // Uploads to the public `media` bucket under `<uid>/<folder>/<uuid>.<ext>`.
-// Returns {} when no file was provided. Storage RLS also enforces the uid path.
+// Returns {} when no file was provided. Storage RLS enforces the uid path.
 export async function uploadImage(
-	supabase: SupabaseClient<Database>,
 	userId: string,
 	folder: string,
 	file: File | null
@@ -26,4 +24,19 @@ export async function uploadImage(
 
 	const { data } = supabase.storage.from('media').getPublicUrl(path);
 	return { url: data.publicUrl };
+}
+
+export function toNum(v: unknown): number | null {
+	const n = parseFloat(String(v ?? ''));
+	return Number.isFinite(n) ? n : null;
+}
+
+export async function ownedTruck(userId: string) {
+	const { data } = await supabase
+		.from('trucks')
+		.select('id, name, slug, logo_url')
+		.eq('owner_id', userId)
+		.order('created_at')
+		.limit(1);
+	return data?.[0] ?? null;
 }

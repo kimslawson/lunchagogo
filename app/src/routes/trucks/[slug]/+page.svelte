@@ -1,17 +1,39 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
+	import { uploadImage } from '$lib/upload';
 	import MapView from '$lib/components/Map.svelte';
 	import { getPosition, fuzz } from '$lib/geo';
 	import { clock, relTime, dayLabel, timeLabel } from '$lib/time';
 	import { DAYS, type MenuItem, type NearbyTruck } from '$lib/types';
 
-	let { data, form } = $props();
+	let { data } = $props();
 
 	let showCheckin = $state(false);
 	let pos = $state<{ lat: number; lng: number } | null>(null);
 	let locating = $state(false);
+	let flashErr = $state('');
+	let flashOk = $state('');
+
+	const loginNext = $derived(`/login?next=${encodeURIComponent('/trucks/' + data.truck.slug)}`);
+
+	async function follow() {
+		if (!data.loggedIn) return goto(loginNext);
+		const { error } = await supabase
+			.from('follows')
+			.insert({ foodie_id: data.user!.id, truck_id: data.truck.id });
+		if (error && error.code !== '23505') return (flashErr = error.message);
+		await invalidateAll();
+	}
+
+	async function unfollow() {
+		if (!data.user) return;
+		await supabase.from('follows').delete().eq('foodie_id', data.user.id).eq('truck_id', data.truck.id);
+		await invalidateAll();
+	}
 
 	async function openCheckin() {
+		if (!data.loggedIn) return goto(loginNext);
 		showCheckin = true;
 		locating = true;
 		try {
@@ -21,6 +43,34 @@
 			pos = null;
 		}
 		locating = false;
+	}
+
+	async function submitCheckin(e: SubmitEvent) {
+		e.preventDefault();
+		flashErr = '';
+		flashOk = '';
+		const fd = new FormData(e.target as HTMLFormElement);
+		const file = fd.get('photo');
+		const caption = String(fd.get('caption') ?? '').trim().slice(0, 280);
+
+		const up = await uploadImage(data.user!.id, 'checkins', file instanceof File ? file : null);
+		if (up.error) return (flashErr = up.error);
+
+		const { error } = await supabase.from('checkins').insert({
+			foodie_id: data.user!.id,
+			truck_id: data.truck.id,
+			actor_name: data.profile?.display_name ?? 'Foodie',
+			actor_avatar: data.profile?.avatar_url ?? null,
+			photo_url: up.url ?? null,
+			caption: caption || null,
+			lat: pos?.lat ?? null,
+			lng: pos?.lng ?? null
+		});
+		if (error) return (flashErr = error.message);
+		flashOk = `Grub grabbed! Your check-in is on ${data.truck.name}’s feed. 😋`;
+		showCheckin = false;
+		pos = null;
+		await invalidateAll();
 	}
 
 	const liveAsTruck = $derived<NearbyTruck[]>(
@@ -56,7 +106,6 @@
 
 <svelte:head><title>{data.truck.name} · Lunch a Go-Go</title></svelte:head>
 
-<!-- Header -->
 <div class="card">
 	<div class="row" style="gap:.8rem; align-items:flex-start">
 		<img class="avatar lg" src={data.truck.logo_url ?? '/img/logo.jpg'} alt="" />
@@ -74,23 +123,18 @@
 		{#if data.isOwner}
 			<a class="btn btn-sm btn-blue" href="/truck">Edit my truck →</a>
 		{:else if data.following}
-			<form method="POST" action="?/unfollow" use:enhance>
-				<button class="btn btn-sm">✓ Following</button>
-			</form>
+			<button class="btn btn-sm" onclick={unfollow}>✓ Following</button>
 		{:else}
-			<form method="POST" action="?/follow" use:enhance>
-				<button class="btn btn-sm btn-primary">＋ Follow</button>
-			</form>
+			<button class="btn btn-sm btn-primary" onclick={follow}>＋ Follow</button>
 		{/if}
 		{#if data.truck.instagram}<a class="chip" href={`https://instagram.com/${data.truck.instagram}`}>📸 @{data.truck.instagram}</a>{/if}
 		{#if data.truck.phone}<a class="chip" href={`tel:${data.truck.phone}`}>📞 Call</a>{/if}
 	</div>
 </div>
 
-{#if form?.error}<div class="flash err">{form.error}</div>{/if}
-{#if form?.checkedIn}<div class="flash ok">Grub grabbed! Your check-in is on {data.truck.name}’s feed. 😋</div>{/if}
+{#if flashErr}<div class="flash err">{flashErr}</div>{/if}
+{#if flashOk}<div class="flash ok">{flashOk}</div>{/if}
 
-<!-- Live location -->
 {#if data.live}
 	<div class="card">
 		<div class="card-head"><h3 class="mb0">📍 Out right now</h3></div>
@@ -105,17 +149,13 @@
 	<div class="notice"><span class="emoji">😴</span><p class="data mb0">Not out on the streets right now. Follow to know when they roll out!</p></div>
 {/if}
 
-<!-- Grab some grub -->
 {#if !data.isOwner}
 	{#if !showCheckin}
 		<button class="btn btn-grub" onclick={openCheckin}>📸 Grab some grub</button>
 	{:else}
 		<div class="card">
 			<div class="card-head"><h3 class="mb0">Grab some grub</h3></div>
-			<form method="POST" action="?/checkin" enctype="multipart/form-data"
-				use:enhance={() => async ({ update }) => { await update(); showCheckin = false; pos = null; }}>
-				<input type="hidden" name="lat" value={pos?.lat ?? ''} />
-				<input type="hidden" name="lng" value={pos?.lng ?? ''} />
+			<form onsubmit={submitCheckin}>
 				<div class="field">
 					<label for="photo">Snap your plate</label>
 					<input id="photo" name="photo" type="file" accept="image/*" capture="environment" />
@@ -136,7 +176,6 @@
 	{/if}
 {/if}
 
-<!-- Specials -->
 {#if data.specials.length}
 	<div class="card">
 		<div class="card-head"><h3 class="mb0">🔥 Today’s specials</h3></div>
@@ -155,7 +194,6 @@
 	</div>
 {/if}
 
-<!-- Menu -->
 {#if data.menu.length}
 	<div class="card">
 		<div class="card-head"><h3 class="mb0">🍔 Menu</h3></div>
@@ -176,7 +214,6 @@
 	</div>
 {/if}
 
-<!-- Hours -->
 {#if data.hours.length}
 	<div class="card">
 		<div class="card-head"><h3 class="mb0">🕒 Regular hours</h3></div>
@@ -193,7 +230,6 @@
 	</div>
 {/if}
 
-<!-- Upcoming -->
 {#if data.upcoming.length}
 	<div class="card">
 		<div class="card-head"><h3 class="mb0">🗓️ Upcoming stops</h3></div>
@@ -208,7 +244,6 @@
 	</div>
 {/if}
 
-<!-- The truck's feed -->
 <div class="card">
 	<div class="card-head"><h3 class="mb0">😋 Grub feed</h3></div>
 	{#if data.checkins.length === 0}

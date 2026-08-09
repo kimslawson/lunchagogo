@@ -1,9 +1,10 @@
 import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import { supabase } from '$lib/supabaseClient';
+import type { PageLoad } from './$types';
 
-export const load: PageServerLoad = async ({ parent, locals: { supabase } }) => {
+export const load: PageLoad = async ({ parent }) => {
 	const { truck } = await parent();
-	if (!truck) redirect(303, '/truck/setup');
+	if (!truck) redirect(307, '/truck/setup');
 
 	const [live, followers, checkins, specials] = await Promise.all([
 		supabase.from('truck_locations').select('*').eq('truck_id', truck.id).eq('is_live', true).order('created_at', { ascending: false }).limit(1).maybeSingle(),

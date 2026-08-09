@@ -1,25 +1,30 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
-// SvelteKit config is passed inline to the `sveltekit()` plugin in this version:
-// top-level keys like `adapter`, `csp`, and `alias` are routed into `kit` config.
+// STATIC-SPA build (Option B): no server. Everything is prebuilt files that any
+// static host — CloudCannon, Netlify, GitHub Pages — can serve. Auth and data
+// calls happen in the browser via supabase-js. Routing is client-side, so we
+// emit a single fallback shell that the host serves for every path.
 export default defineConfig({
 	plugins: [
 		sveltekit({
 			compilerOptions: {
-				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 
-			// adapter-auto detects Netlify / Cloudflare Pages / Vercel at deploy time,
-			// so the same code ships to any of them with no change. Pin a specific
-			// adapter (adapter-netlify / -cloudflare / -vercel / -node) if you prefer.
-			adapter: adapter(),
+			adapter: adapter({
+				pages: 'build',
+				assets: 'build',
+				fallback: 'index.html', // SPA shell for client-side routing
+				precompress: false,
+				strict: false
+			}),
 
-			// Content-Security-Policy, managed by SvelteKit (it adds nonces/hashes for
-			// its own inline hydration scripts, so this can't break the app).
+			// CSP is emitted as a <meta> tag in the static shell. (Header-only
+			// directives like frame-ancestors also ship in static/_headers, which
+			// CloudCannon and Netlify honor.)
 			csp: {
 				mode: 'auto',
 				directives: {
@@ -28,11 +33,9 @@ export default defineConfig({
 					'style-src': ['self', 'unsafe-inline'],
 					'img-src': ['self', 'data:', 'blob:', 'https:'],
 					'font-src': ['self', 'data:'],
-					// 'self' + https/wss covers Supabase REST, Storage and Realtime.
 					'connect-src': ['self', 'https:', 'wss:'],
 					'worker-src': ['self'],
 					'manifest-src': ['self'],
-					'frame-ancestors': ['none'],
 					'base-uri': ['self'],
 					'form-action': ['self']
 				}
