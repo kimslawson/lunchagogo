@@ -25,12 +25,16 @@ itself, and the host auto-deploys from GitHub every time code is pushed.
 
 That's your whole database, security rules, and photo storage — done.
 
-### 1c. Grab your keys
-1. Left sidebar → **Project Settings** (gear) → **API**.
-2. Copy two things — you'll paste them in Part 3:
-   - **Project URL** (looks like `https://abcd1234.supabase.co`)
-   - **anon public** key (a long string). This one is *safe* to put in the browser;
-     your Row-Level Security rules are what actually protect data.
+### 1c. Grab your keys (Supabase moved these recently)
+1. **Project URL:** click the green **Connect** button (top bar), or **Project
+   Settings → Data API**. It's just your **Project ID** (Settings → General) as
+   `https://<project-id>.supabase.co`.
+2. **API key:** **Project Settings → API Keys** → the **Publishable and secret**
+   tab → copy the **Publishable key** (`sb_publishable_…`). It's *safe* in the
+   browser; your Row-Level Security rules are what actually protect data. *(The
+   older **anon** key under the **Legacy** tab also works — same role, older format.)*
+   - Don't use the **Secret** key (`sb_secret_…`) / service_role in the app — those
+     bypass RLS and are only for the push Edge Function (Part 5).
 
 ### 1d. Turn on the good auth settings (all free, one click each)
 1. **Authentication → Providers → Email**: make sure **Confirm email** is ON. (The app
@@ -63,8 +67,8 @@ cp .env.example .env
 
 Open `.env` in a text editor and fill in:
 ```
-PUBLIC_SUPABASE_URL="...your Project URL..."
-PUBLIC_SUPABASE_ANON_KEY="...your anon public key..."
+PUBLIC_SUPABASE_URL="https://<project-id>.supabase.co"
+PUBLIC_SUPABASE_ANON_KEY="sb_publishable_...  (or the legacy anon key)"
 PUBLIC_VAPID_PUBLIC_KEY="...your VAPID public key (or leave the placeholder)..."
 ```
 
