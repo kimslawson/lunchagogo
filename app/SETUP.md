@@ -21,10 +21,16 @@ that runs itself). Budget: **~20 minutes, $0**.
 2. Copy all of `app/supabase/migrations/0001_init.sql`, paste, **Run** (expect "Success").
 3. New query → do the same with `app/supabase/migrations/0002_storage.sql` → **Run**.
 
-### 1c. Grab your keys
-**Project Settings (gear) → API**, copy:
-- **Project URL** (`https://abcd1234.supabase.co`)
-- **anon public** key — safe for the browser; RLS is what guards your data.
+### 1c. Grab your keys (Supabase moved these recently)
+- **Project URL:** click the green **Connect** button (top bar), or **Project
+  Settings → Data API**. It's just your **Project ID** (Settings → General) as
+  `https://<project-id>.supabase.co`.
+- **API key:** **Project Settings → API Keys** → the **Publishable and secret**
+  tab → copy the **Publishable key** (`sb_publishable_…`). Browser-safe; RLS guards
+  your data. *(The older **anon** key under the **Legacy** tab also works — same
+  role, older format.)*
+  - Do **not** use the **Secret** key (`sb_secret_…`) / service_role in the app —
+    those bypass RLS and are only for the push Edge Function (Part 6).
 
 ### 1d. Auth settings (free, recommended)
 - **Authentication → Providers → Email**: **Confirm email** ON.
@@ -50,8 +56,8 @@ cp .env.example .env
 ```
 Edit `.env`:
 ```
-PUBLIC_SUPABASE_URL="...Project URL..."
-PUBLIC_SUPABASE_ANON_KEY="...anon public key..."
+PUBLIC_SUPABASE_URL="https://<project-id>.supabase.co"
+PUBLIC_SUPABASE_ANON_KEY="sb_publishable_...  (or the legacy anon key)"
 PUBLIC_VAPID_PUBLIC_KEY="...VAPID public key (or leave placeholder)..."
 ```
 Then:
