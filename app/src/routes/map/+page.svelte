@@ -86,7 +86,7 @@
 {:else if status === 'locating'}
 	<div class="notice"><span class="emoji">🛰️</span><p class="data mb0">Finding trucks around you…</p></div>
 {:else}
-	{#if me}<MapView {trucks} center={me} {me} />{/if}
+	{#if me}<MapView {trucks} center={me} {me} radiusMeters={radiusMi * 1609.344} />{/if}
 
 	<div class="stack" style="margin-top:.9rem">
 		{#if searching}

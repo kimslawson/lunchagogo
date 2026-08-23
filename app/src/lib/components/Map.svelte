@@ -6,11 +6,13 @@
 	let {
 		trucks = [],
 		center,
-		me = null
+		me = null,
+		radiusMeters = null
 	}: {
 		trucks?: NearbyTruck[];
 		center: { lat: number; lng: number };
 		me?: { lat: number; lng: number } | null;
+		radiusMeters?: number | null;
 	} = $props();
 
 	let el: HTMLDivElement;
@@ -20,6 +22,8 @@
 	let map: any;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let markerLayer: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let radiusCircle: any;
 	let ready = $state(false);
 
 	function esc(s: string): string {
@@ -47,6 +51,32 @@
 		}
 	}
 
+	// Draw the search-radius circle around "me" and zoom the map to fit it, so
+	// changing the radius visibly zooms in/out.
+	function drawRadius() {
+		if (!ready || !map) return;
+		if (!me || !radiusMeters) {
+			if (radiusCircle) {
+				radiusCircle.remove();
+				radiusCircle = null;
+			}
+			return;
+		}
+		const latlng = L.latLng(me.lat, me.lng);
+		if (radiusCircle) {
+			radiusCircle.setLatLng(latlng).setRadius(radiusMeters);
+		} else {
+			radiusCircle = L.circle(latlng, {
+				radius: radiusMeters,
+				color: '#2d7bca',
+				weight: 2,
+				fillColor: '#2d7bca',
+				fillOpacity: 0.08
+			}).addTo(map);
+		}
+		map.fitBounds(radiusCircle.getBounds(), { padding: [18, 18] });
+	}
+
 	onMount(async () => {
 		L = (await import('leaflet')).default;
 		map = L.map(el).setView([center.lat, center.lng], 13);
@@ -57,15 +87,21 @@
 		markerLayer = L.layerGroup().addTo(map);
 		ready = true;
 		draw();
+		drawRadius();
 	});
 
 	onDestroy(() => map?.remove());
 
-	// redraw whenever the data changes
+	// Markers react to data; the circle + zoom react to the radius.
 	$effect(() => {
 		void trucks;
 		void me;
 		if (ready) draw();
+	});
+	$effect(() => {
+		void radiusMeters;
+		void me;
+		if (ready) drawRadius();
 	});
 </script>
 
