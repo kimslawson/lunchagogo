@@ -84,25 +84,23 @@ repo, different branch. Two ways — pick whichever feels comfortable.
 ### Option 1 — Let CloudCannon build it (auto-deploys on every push) ✅ recommended
 1. **Create Site → Connect** your `lunchagogo` repo; **Branch:** `claude/lunchagogo-webapp-static`.
 2. **Site Settings → Builds → Configuration:**
-   - **Static site generator: SvelteKit.** (CloudCannon's SvelteKit support is built
-     around `adapter-static`, which this app uses — so it's the right pick, not
-     "Static" or "Custom.")
-   - **Output path:** `app/build` — where the built site lands.
-   - **The subfolder:** the app lives in `app/` (your splash is at the repo root) and
-     CloudCannon builds from the root. So EITHER set the site's **source / base path**
-     to `app`, OR set the build command to `cd app && npm install && npm run build`.
+   - **Static site generator: `Custom`.** ⚠️ **Not "SvelteKit".** The SvelteKit preset
+     runs CloudCannon's `@cloudcannon/reader`, which is for SvelteKit sites *without* a
+     static adapter and expects the app at the repo root. This app already produces a
+     complete static site with `adapter-static`, so **Custom** ("run my build, publish
+     my folder") is the correct fit and avoids the reader.
+   - **Build command:** `cd app && npm install && npm run build`  (the app lives in the
+     `app/` subfolder — your splash is at the repo root — and CloudCannon builds from root).
+   - **Output path:** `app/build`  — `adapter-static` writes the finished site here.
    - **Environment variables** (Advanced options): add the three `PUBLIC_…` vars —
      `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `PUBLIC_VAPID_PUBLIC_KEY`.
-     ⚠️ **The build fails without these** (`PUBLIC_SUPABASE_URL is not exported`).
+     ⚠️ **The build fails early without these** (`PUBLIC_SUPABASE_URL is not exported`).
    - **Node version** (Advanced options, if shown): 20 or 22.
-3. **Save**, then trigger a build. Every push to this branch rebuilds.
+3. **Save**, then trigger a build. Every push to this branch rebuilds. The published
+   `app/build` folder includes `_redirects`, `_headers`, and `404.html` for SPA routing.
 
-> **Custom fallback** — if the SvelteKit preset fights the subfolder, set the SSG to
-> **Custom** and spell it out:
-> Install `cd app && npm install` · Build `cd app && npm run build` · Output `app/build`.
->
-> *(CloudCannon's exact field labels move around; if the Node build fights you at all,
-> Option 2 below always works.)*
+> *(If a build ever fails at the very end with `ls: cannot access 'build'`, the Output
+> path is wrong — it must be `app/build`, not `build`.)*
 
 ### Option 2 — Build locally, upload the folder (the FTP-feeling way)
 1. `npm run build` (Part 3).
