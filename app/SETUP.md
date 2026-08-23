@@ -1,8 +1,9 @@
 # Setup & Deploy — Lunch a Go-Go (Option B: static SPA on CloudCannon)
 
-This is the **static** build — plain files, no server — so it hosts on CloudCannon
-right next to your splash page. You still need a **Supabase** account (the backend
-that runs itself). Budget: **~20 minutes, $0**.
+This is the **static** build — plain files, no server. One CloudCannon site serves your
+splash at the root (`lunchagogo.app`) and the app under `/app` (`lunchagogo.app/app`),
+with already-signed-in visitors bounced to the app. You still need a **Supabase** account
+(the backend that runs itself). Budget: **~20 minutes, $0**.
 
 > Same backend and features as Option A; only the hosting differs. If you want the
 > more-hardened server-side-session version, use branch `claude/lunchagogo-webapp-bilao2`.
@@ -67,65 +68,67 @@ npm run dev
 ```
 Open the printed URL, make a truck account and a foodie account, click around.
 
-### Make the static files
+### Make the combined site
 ```sh
 npm run build
 ```
-This produces **`app/build/`** — a complete static website (`index.html`, `404.html`,
-`_app/`, fonts, images, `_headers`, `_redirects`). That folder is the whole app.
+This builds the app (under a `/app` base path) and assembles **`app/_site/`** — your
+splash at the root **plus** the app under `/app`:
+```
+app/_site/            your splash (index.html, css/, js/, img/, …) → the root domain
+app/_site/app/        the SvelteKit app       → lunchagogo.app/app
+app/_site/_redirects  SPA routing for /app/*
+app/_site/_headers    security headers
+```
+`app/_site` is the whole thing to publish. **Your splash now lives on this branch** —
+edit it at the repo root and it ships with the next build.
 
 ---
 
-## Part 4 — Deploy to CloudCannon (alongside your splash)
+## Part 4 — Deploy to CloudCannon (splash at /, app at /app — ONE site)
 
-Your splash is one CloudCannon **site**; the app becomes a **second site** on the same
-repo, different branch. Two ways — pick whichever feels comfortable.
+A single site serves both. Point your existing `lunchagogo.app` CloudCannon site at this
+branch (or make a new site and move the domain to it).
 
 ### Option 1 — Let CloudCannon build it (auto-deploys on every push) ✅ recommended
-1. **Create Site → Connect** your `lunchagogo` repo; **Branch:** `claude/lunchagogo-webapp-static`.
+1. **Site → Connect** the `lunchagogo` repo; **Branch:** `claude/lunchagogo-webapp-static`.
 2. **Site Settings → Builds → Configuration:**
-   - **Static site generator: `Custom`.** ⚠️ **Not "SvelteKit".** The SvelteKit preset
-     runs CloudCannon's `@cloudcannon/reader`, which is for SvelteKit sites *without* a
-     static adapter and expects the app at the repo root. This app already produces a
-     complete static site with `adapter-static`, so **Custom** ("run my build, publish
-     my folder") is the correct fit and avoids the reader.
-   - **Build command:** `cd app && npm install && npm run build`  (the app lives in the
-     `app/` subfolder — your splash is at the repo root — and CloudCannon builds from root).
-   - **Output path:** `app/build`  — `adapter-static` writes the finished site here.
-   - **Environment variables** (Advanced options): add the three `PUBLIC_…` vars —
-     `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `PUBLIC_VAPID_PUBLIC_KEY`.
-     ⚠️ **The build fails early without these** (`PUBLIC_SUPABASE_URL is not exported`).
-   - **Node version** (Advanced options, if shown): 20 or 22.
-3. **Save**, then trigger a build. Every push to this branch rebuilds. The published
-   `app/build` folder includes `_redirects`, `_headers`, and `404.html` for SPA routing.
+   - **Static site generator: `Custom`.** ⚠️ Not "SvelteKit" (that preset runs
+     `@cloudcannon/reader` and expects a root-level SvelteKit app; we ship a finished
+     static build instead).
+   - **Build command:** `cd app && npm install && npm run build`
+   - **Output path:** `app/_site`   ← the combined splash + app
+   - **Environment variables** (Advanced options): `PUBLIC_SUPABASE_URL`,
+     `PUBLIC_SUPABASE_ANON_KEY`, `PUBLIC_VAPID_PUBLIC_KEY`. ⚠️ Build fails without them.
+   - **Node version** (if shown): 20 or 22.
+3. **Save** → build. Every push rebuilds. `app/_site` already contains your splash,
+   `_redirects`, and `_headers`.
 
-> *(If a build ever fails at the very end with `ls: cannot access 'build'`, the Output
-> path is wrong — it must be `app/build`, not `build`.)*
+> *(If the build ends with `ls: cannot access '<x>'`, the Output path is wrong — it must
+> be `app/_site`.)*
 
-### Option 2 — Build locally, upload the folder (the FTP-feeling way)
-1. `npm run build` (Part 3).
-2. Put the **contents of `app/build/`** wherever you host static files:
-   - **CloudCannon:** create a site from a folder / upload the `build` contents, or
-   - **Netlify:** drag the `app/build` folder onto **netlify.com → Add new site →
-     Deploy manually**. Instant URL, no account fuss.
-3. Re-build and re-upload whenever you change the app.
+### Option 2 — Build locally, upload the folder
+`npm run build`, then publish the **contents of `app/_site/`** (drag onto Netlify's manual
+deploy, or upload to CloudCannon). Re-build and re-upload on each change.
 
 ### Tell Supabase your live URL
-Supabase → **Authentication → URL Configuration**:
-- **Site URL:** your app's URL.
-- **Redirect URLs:** add `https://YOUR-APP-URL/auth/callback`.
+Supabase → **Authentication → URL Configuration:**
+- **Site URL:** `https://lunchagogo.app`
+- **Redirect URLs:** add `https://lunchagogo.app/app/auth/callback`  ← note the **/app**.
 
 ---
 
-## Part 5 — SPA routing note (important for static hosts)
+## Part 5 — How the split works
 
-Because this is a single-page app, the host must serve the app shell for *any* path
-(so refreshing on `/trucks/taco-truck` works). This repo already handles it two ways:
-- **`static/_redirects`** (`/* /index.html 200`) — CloudCannon & Netlify honor this.
-- **`build/404.html`** — a copy of the shell, for hosts that fall back to 404.
+- **`lunchagogo.app/`** → your splash. A tiny script in its `index.html` checks the
+  browser for a saved Supabase session and, if you're already signed in, sends you to
+  `/app`. First-time visitors just see the splash.
+- **`lunchagogo.app/app`** → the app (built with a `/app` base path).
+- Deep links like `/app/trucks/taco-truck` work because `_redirects` serves the app shell
+  for any `/app/*` path. (Existing files — assets, images — are served directly first.)
 
-If deep links 404 on refresh, make sure your host is serving `index.html` (or `404.html`)
-for unknown routes — that's the one static-host gotcha.
+> Want the splash's own buttons to open the app? Point them at `/app/signup` or `/app`.
+> Logging out of the app drops you back at the splash root.
 
 ---
 

@@ -1,33 +1,11 @@
 /// <reference types="@sveltejs/kit" />
 /// <reference lib="webworker" />
-import { build, files, version } from '$service-worker';
+import { base } from '$service-worker';
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
-const CACHE = `lunchagogo-${version}`;
-const ASSETS = [...build, ...files];
 
-sw.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => sw.skipWaiting()));
-});
-
-sw.addEventListener('activate', (event) => {
-	event.waitUntil(
-		caches
-			.keys()
-			.then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-			.then(() => sw.clients.claim())
-	);
-});
-
-// Cache-first for our own built assets; network for everything else.
-sw.addEventListener('fetch', (event) => {
-	const req = event.request;
-	if (req.method !== 'GET') return;
-	const url = new URL(req.url);
-	if (url.origin === location.origin && ASSETS.includes(url.pathname)) {
-		event.respondWith(caches.match(req).then((hit) => hit ?? fetch(req)));
-	}
-});
+sw.addEventListener('install', () => sw.skipWaiting());
+sw.addEventListener('activate', (event) => event.waitUntil(sw.clients.claim()));
 
 // --- Web Push -------------------------------------------------------------
 sw.addEventListener('push', (event) => {
@@ -41,16 +19,16 @@ sw.addEventListener('push', (event) => {
 	event.waitUntil(
 		sw.registration.showNotification(title, {
 			body: payload.body ?? 'A truck you follow is on the move!',
-			icon: payload.icon ?? '/img/icon-192.png',
-			badge: '/img/icon-192.png',
-			data: { url: payload.url ?? '/feed' }
+			icon: payload.icon ?? `${base}/img/icon-192.png`,
+			badge: `${base}/img/icon-192.png`,
+			data: { url: payload.url ?? `${base}/feed` }
 		})
 	);
 });
 
 sw.addEventListener('notificationclick', (event) => {
 	event.notification.close();
-	const target = (event.notification.data?.url as string) ?? '/feed';
+	const target = (event.notification.data?.url as string) ?? `${base}/feed`;
 	event.waitUntil(
 		sw.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
 			for (const client of clients) {

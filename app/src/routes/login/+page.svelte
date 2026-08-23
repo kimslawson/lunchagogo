@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { supabase } from '$lib/supabaseClient';
+	import { u } from '$lib/paths';
 
 	let email = $state('');
 	let password = $state('');
@@ -10,7 +11,7 @@
 
 	function safeNext(): string {
 		const n = page.url.searchParams.get('next');
-		return n && n.startsWith('/') && !n.startsWith('//') ? n : '/';
+		return n && n.startsWith('/') && !n.startsWith('//') ? n : u('/');
 	}
 
 	async function handleLogin(e: SubmitEvent) {
@@ -30,7 +31,7 @@
 <svelte:head><title>Log in · Lunch a Go-Go</title></svelte:head>
 
 <div class="centered">
-	<div class="brand-lockup"><img src="/img/logo.jpg" alt="Lunch a Go-Go" /></div>
+	<div class="brand-lockup"><img src={u('/img/logo.jpg')} alt="Lunch a Go-Go" /></div>
 
 	<div class="card auth-card stack">
 		<h2 class="mb0">Welcome back!</h2>
@@ -51,7 +52,7 @@
 		</form>
 
 		<p class="center muted data" style="margin-bottom:0">
-			New here? <a href="/signup">Make an account</a>
+			New here? <a href={u('/signup')}>Make an account</a>
 		</p>
 	</div>
 </div>

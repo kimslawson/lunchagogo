@@ -3,6 +3,7 @@
 	import { supabase } from '$lib/supabaseClient';
 	import { uploadImage } from '$lib/upload';
 	import { uniqueSlug } from '$lib/slug';
+	import { u } from '$lib/paths';
 
 	let { data } = $props();
 	const t = $derived(data.truck);
@@ -49,7 +50,7 @@
 			submitting = false;
 			if (err) return (error = err.message);
 			await invalidateAll();
-			goto('/truck');
+			goto(u('/truck'));
 		}
 	}
 </script>

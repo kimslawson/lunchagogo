@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import { supabase } from '$lib/supabaseClient';
 	import { uploadImage } from '$lib/upload';
 	import { enablePush, pushSupported } from '$lib/push';
+	import { u, LOGO } from '$lib/paths';
 
 	let { data } = $props();
 
@@ -54,7 +55,8 @@
 
 	async function logout() {
 		await supabase.auth.signOut();
-		goto('/');
+		// Leave the SPA entirely, back to the splash at the site root.
+		window.location.href = '/';
 	}
 </script>
 
@@ -66,13 +68,13 @@
 {#if error}<div class="flash err">{error}</div>{/if}
 
 {#if data.profile?.role === 'truck'}
-	<a class="btn btn-blue btn-lg" href="/truck" style="margin-bottom:.9rem">🚚 Go to my truck dashboard</a>
+	<a class="btn btn-blue btn-lg" href={u('/truck')} style="margin-bottom:.9rem">🚚 Go to my truck dashboard</a>
 {/if}
 
 <div class="card">
 	<div class="card-head"><h3 class="mb0">Your profile</h3></div>
 	<div class="row" style="gap:.7rem; margin-bottom:.6rem">
-		<img class="avatar lg" src={data.profile?.avatar_url ?? '/img/logo.jpg'} alt="" />
+		<img class="avatar lg" src={data.profile?.avatar_url ?? LOGO} alt="" />
 		<div class="data muted">This is how you show up when you grab some grub.</div>
 	</div>
 	<form onsubmit={saveProfile}>
@@ -111,13 +113,13 @@
 	<div class="card">
 		<div class="card-head"><h3 class="mb0">Trucks you follow</h3></div>
 		{#if data.follows.length === 0}
-			<p class="data muted mb0">You’re not following anyone yet. <a href="/map">Find trucks →</a></p>
+			<p class="data muted mb0">You’re not following anyone yet. <a href={u('/map')}>Find trucks →</a></p>
 		{:else}
 			<div class="stack">
 				{#each data.follows as f (f.truck_id)}
 					<div class="row between" style="gap:.6rem">
-						<a class="row grow" href={`/trucks/${f.trucks?.slug}`} style="gap:.6rem; color:inherit">
-							<img class="avatar sm" src={f.trucks?.logo_url ?? '/img/logo.jpg'} alt="" />
+						<a class="row grow" href={u(`/trucks/${f.trucks?.slug}`)} style="gap:.6rem; color:inherit">
+							<img class="avatar sm" src={f.trucks?.logo_url ?? LOGO} alt="" />
 							<div><strong class="data">{f.trucks?.name}</strong></div>
 						</a>
 						<button class="btn btn-sm" title="Toggle nearby alerts" onclick={() => toggleNotify(f.truck_id, !f.notify)}>

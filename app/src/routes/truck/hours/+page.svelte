@@ -2,6 +2,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { supabase } from '$lib/supabaseClient';
 	import { DAYS, type TruckHours } from '$lib/types';
+	import { u } from '$lib/paths';
 
 	let { data } = $props();
 	let error = $state('');
@@ -38,7 +39,7 @@
 <svelte:head><title>Hours · Lunch a Go-Go</title></svelte:head>
 
 <h1>Regular hours</h1>
-<p class="data muted">Your typical week. For one-off spots and times, use <a href="/truck/schedule">Schedule</a>.</p>
+<p class="data muted">Your typical week. For one-off spots and times, use <a href={u('/truck/schedule')}>Schedule</a>.</p>
 
 {#if error}<div class="flash err">{error}</div>{/if}
 {#if saved}<div class="flash ok">Hours saved!</div>{/if}

@@ -22,6 +22,11 @@ export default defineConfig({
 				strict: false
 			}),
 
+			// The app is served under lunchagogo.app/app (the splash owns the root).
+			// base makes all SvelteKit asset URLs absolute under /app; relative:false
+			// keeps them depth-independent so the SPA fallback works at any route.
+			paths: { base: '/app', relative: false },
+
 			// CSP is emitted as a <meta> tag in the static shell. (Header-only
 			// directives like frame-ancestors also ship in static/_headers, which
 			// CloudCannon and Netlify honor.)

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { FeedItem } from '$lib/types';
 	import { relTime } from '$lib/time';
+	import { u } from '$lib/paths';
 	let { item }: { item: FeedItem } = $props();
 </script>
 
@@ -10,7 +11,7 @@
 	{/if}
 	<div class="body">
 		<div class="feed-meta">
-			<a href={`/trucks/${item.truck_slug}`} class="row" style="gap:.5rem; color:inherit;">
+			<a href={u(`/trucks/${item.truck_slug}`)} class="row" style="gap:.5rem; color:inherit;">
 				{#if item.truck_logo}<img class="avatar sm" src={item.truck_logo} alt="" />{/if}
 				<strong>{item.truck_name}</strong>
 			</a>

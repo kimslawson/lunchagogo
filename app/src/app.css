@@ -7,8 +7,8 @@
 
 @font-face {
   font-family: 'panpizza';
-  src: url('/fonts/panpizza-webfont.woff2') format('woff2'),
-       url('/fonts/panpizza-webfont.woff') format('woff');
+  src: url('/app/fonts/panpizza-webfont.woff2') format('woff2'),
+       url('/app/fonts/panpizza-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -17,9 +17,9 @@
 @font-face {
   font-family: 'Refrigerator Deluxe';
   src: local('Refrigerator Deluxe'), local('RefrigeratorDeluxe'),
-       url('/fonts/RefrigeratorDeluxe.woff2') format('woff2'),
-       url('/fonts/RefrigeratorDeluxe.woff') format('woff'),
-       url('/fonts/RefrigeratorDeluxe.ttf') format('truetype');
+       url('/app/fonts/RefrigeratorDeluxe.woff2') format('woff2'),
+       url('/app/fonts/RefrigeratorDeluxe.woff') format('woff'),
+       url('/app/fonts/RefrigeratorDeluxe.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -75,7 +75,7 @@ body {
   /* sunburst behind everything, fixed so the shell floats on it */
   background-image:
     radial-gradient(circle at 50% 38%, rgba(255,255,255,0.18), rgba(255,255,255,0) 60%),
-    url('/img/sunburst.jpg');
+    url('/app/img/sunburst.jpg');
   background-size: cover;
   background-position: center top;
   background-attachment: fixed;

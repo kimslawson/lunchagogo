@@ -2,6 +2,7 @@
 	import 'leaflet/dist/leaflet.css';
 	import { onMount, onDestroy } from 'svelte';
 	import type { NearbyTruck } from '$lib/types';
+	import { u } from '$lib/paths';
 
 	let {
 		trucks = [],
@@ -46,7 +47,7 @@
 				icon: L.divIcon({ html: '🚚', className: 'truck-pin', iconSize: [32, 32], iconAnchor: [16, 16] })
 			}).addTo(markerLayer);
 			marker.bindPopup(
-				`<strong>${esc(t.name)}</strong><br>${t.cuisine ? esc(t.cuisine) + '<br>' : ''}<a href="/trucks/${esc(t.slug)}">See truck →</a>`
+				`<strong>${esc(t.name)}</strong><br>${t.cuisine ? esc(t.cuisine) + '<br>' : ''}<a href="${u('/trucks/' + esc(t.slug))}">See truck →</a>`
 			);
 		}
 	}

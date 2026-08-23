@@ -4,6 +4,7 @@
 	import { supabase } from '$lib/supabaseClient';
 	import { getPosition } from '$lib/geo';
 	import { relTime } from '$lib/time';
+	import { u } from '$lib/paths';
 
 	let { data } = $props();
 
@@ -52,7 +53,7 @@
 					truck_id: data.truck!.id,
 					title: `${data.truck!.name} is out! 🚚`,
 					body: address ? `Now at ${address}` : 'Rolling now — come grab some grub!',
-					url: `/trucks/${data.truck!.slug}`
+					url: u(`/trucks/${data.truck!.slug}`)
 				}
 			});
 		} catch {

@@ -3,6 +3,7 @@
 	import MapView from '$lib/components/Map.svelte';
 	import { getPosition, formatDistance } from '$lib/geo';
 	import type { NearbyTruck } from '$lib/types';
+	import { u, LOGO } from '$lib/paths';
 
 	let { data } = $props();
 
@@ -92,11 +93,11 @@
 		{#if searching}
 			<div class="tiny muted data center">Searching within {radiusMi} mi…</div>
 		{:else if trucks.length === 0}
-			<div class="notice"><span class="emoji">🌭</span><p class="data mb0">No live trucks within {radiusMi} mi right now. Try a bigger radius — or if you run a truck, tap <a href="/truck/location">Go live</a> and you’ll show up here.</p></div>
+			<div class="notice"><span class="emoji">🌭</span><p class="data mb0">No live trucks within {radiusMi} mi right now. Try a bigger radius — or if you run a truck, tap <a href={u('/truck/location')}>Go live</a> and you’ll show up here.</p></div>
 		{:else}
 			{#each trucks as t (t.truck_id)}
-				<a class="card tight row" href={`/trucks/${t.slug}`} style="gap:.7rem; color:inherit">
-					<img class="avatar" src={t.logo_url ?? '/img/logo.jpg'} alt="" />
+				<a class="card tight row" href={u(`/trucks/${t.slug}`)} style="gap:.7rem; color:inherit">
+					<img class="avatar" src={t.logo_url ?? LOGO} alt="" />
 					<div class="grow">
 						<div class="row" style="gap:.4rem"><strong>{t.name}</strong> <span class="badge live dot">LIVE</span></div>
 						<div class="tiny muted data">{t.cuisine ?? 'Food truck'} · {formatDistance(t.distance_m)}</div>

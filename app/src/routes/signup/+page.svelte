@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { supabase } from '$lib/supabaseClient';
+	import { u } from '$lib/paths';
 
 	let role = $state<'foodie' | 'truck'>(
 		untrack(() => (page.url.searchParams.get('role') === 'truck' ? 'truck' : 'foodie'))
@@ -26,20 +27,20 @@
 			password,
 			options: {
 				data: { role, display_name: display_name.trim(), home_zip: home_zip.trim() || null },
-				emailRedirectTo: `${location.origin}/auth/callback`
+				emailRedirectTo: `${location.origin}${u('/auth/callback')}`
 			}
 		});
 		submitting = false;
 		if (err) return (error = err.message);
 		if (!data.session) return (needsConfirm = true);
-		goto(role === 'truck' ? '/truck' : '/map');
+		goto(role === 'truck' ? u('/truck') : u('/map'));
 	}
 </script>
 
 <svelte:head><title>Sign up · Lunch a Go-Go</title></svelte:head>
 
 <div class="centered">
-	<div class="brand-lockup"><img src="/img/logo.jpg" alt="Lunch a Go-Go" /></div>
+	<div class="brand-lockup"><img src={u('/img/logo.jpg')} alt="Lunch a Go-Go" /></div>
 
 	<div class="card auth-card stack">
 		{#if needsConfirm}
@@ -48,7 +49,7 @@
 				<h3>Check your email!</h3>
 				<p class="data">We sent a confirmation link to <strong>{email}</strong>. Tap it to finish signing up.</p>
 			</div>
-			<a class="btn btn-ghost" href="/login">Back to log in</a>
+			<a class="btn btn-ghost" href={u('/login')}>Back to log in</a>
 		{:else}
 			<h2 class="mb0">Follow the food!</h2>
 			<p class="muted data" style="margin-top:0">Make your account. Takes ten seconds.</p>
@@ -92,7 +93,7 @@
 			</form>
 
 			<p class="center muted data" style="margin-bottom:0">
-				Already have an account? <a href="/login">Log in</a>
+				Already have an account? <a href={u('/login')}>Log in</a>
 			</p>
 		{/if}
 	</div>

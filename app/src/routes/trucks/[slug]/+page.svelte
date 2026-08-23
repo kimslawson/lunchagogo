@@ -6,6 +6,7 @@
 	import { getPosition, fuzz } from '$lib/geo';
 	import { clock, relTime, dayLabel, timeLabel } from '$lib/time';
 	import { DAYS, type MenuItem, type NearbyTruck } from '$lib/types';
+	import { u, LOGO } from '$lib/paths';
 
 	let { data } = $props();
 
@@ -15,7 +16,7 @@
 	let flashErr = $state('');
 	let flashOk = $state('');
 
-	const loginNext = $derived(`/login?next=${encodeURIComponent('/trucks/' + data.truck.slug)}`);
+	const loginNext = $derived(`${u('/login')}?next=${encodeURIComponent(u('/trucks/' + data.truck.slug))}`);
 
 	async function follow() {
 		if (!data.loggedIn) return goto(loginNext);
@@ -108,7 +109,7 @@
 
 <div class="card">
 	<div class="row" style="gap:.8rem; align-items:flex-start">
-		<img class="avatar lg" src={data.truck.logo_url ?? '/img/logo.jpg'} alt="" />
+		<img class="avatar lg" src={data.truck.logo_url ?? LOGO} alt="" />
 		<div class="grow">
 			<div class="row" style="gap:.4rem; flex-wrap:wrap">
 				<h1 class="mb0">{data.truck.name}</h1>
@@ -121,7 +122,7 @@
 
 	<div class="row wrap" style="gap:.5rem">
 		{#if data.isOwner}
-			<a class="btn btn-sm btn-blue" href="/truck">Edit my truck →</a>
+			<a class="btn btn-sm btn-blue" href={u('/truck')}>Edit my truck →</a>
 		{:else if data.following}
 			<button class="btn btn-sm" onclick={unfollow}>✓ Following</button>
 		{:else}

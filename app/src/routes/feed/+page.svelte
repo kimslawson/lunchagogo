@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FeedCard from '$lib/components/FeedCard.svelte';
+	import { u } from '$lib/paths';
 	let { data } = $props();
 </script>
 
@@ -7,7 +8,7 @@
 
 <div class="row between" style="margin-bottom:.6rem">
 	<h1 class="mb0">The Feed</h1>
-	<a class="btn btn-sm btn-blue" href="/map">🗺️ Find trucks</a>
+	<a class="btn btn-sm btn-blue" href={u('/map')}>🗺️ Find trucks</a>
 </div>
 
 {#if data.feed.length === 0}
@@ -20,7 +21,7 @@
 			<h3>All quiet… for now</h3>
 			<p class="data">The trucks you follow haven’t posted yet. Check back at lunchtime!</p>
 		{/if}
-		<a class="btn btn-primary" href="/map">Find trucks near me</a>
+		<a class="btn btn-primary" href={u('/map')}>Find trucks near me</a>
 	</div>
 {:else}
 	<div class="stack">

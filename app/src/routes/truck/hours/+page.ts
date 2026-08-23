@@ -1,10 +1,11 @@
 import { redirect } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';
+import { u } from '$lib/paths';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ parent }) => {
 	const { truck } = await parent();
-	if (!truck) redirect(307, '/truck/setup');
+	if (!truck) redirect(307, u('/truck/setup'));
 	const { data: hours } = await supabase
 		.from('truck_hours')
 		.select('*')

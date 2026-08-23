@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { relTime } from '$lib/time';
+	import { LOGO } from '$lib/paths';
 	let { data } = $props();
 </script>
 
@@ -15,7 +16,7 @@
 		{#each data.patrons as p, i (p.foodie_id)}
 			<div class="card row" style="gap:.7rem; align-items:center">
 				<div style="font-family:var(--font-display); font-size:1.3rem; width:2ch; text-align:center">{i + 1}</div>
-				<img class="avatar" src={p.avatar_url ?? '/img/logo.jpg'} alt="" />
+				<img class="avatar" src={p.avatar_url ?? LOGO} alt="" />
 				<div class="grow">
 					<div class="row" style="gap:.4rem">
 						<strong>{p.name}</strong>

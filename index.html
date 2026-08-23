@@ -4,6 +4,21 @@
 
   <head>
     <meta charset="utf-8">
+    <!-- If already signed in to the app, skip the splash and go straight to /app.
+         The app stores its Supabase session in this same origin's localStorage. -->
+    <script>
+      (function () {
+        try {
+          for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && /^sb-.*-auth-token$/.test(k) && localStorage.getItem(k)) {
+              location.replace('/app');
+              break;
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
     <title>Lunch a Go-Go</title>
     <meta name="description" content="Lunch a Go-Go connects food trucks and their followers. It's the app for foodies to track their favorite local mobile restaurants, hot dog stands, snack shacks, ice cream trucks, and more.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
