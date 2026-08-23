@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
 	let { data, form } = $props();
 
 	let role = $state<'foodie' | 'truck'>(
-		(form?.values?.role as 'foodie' | 'truck') ?? (data.role as 'foodie' | 'truck')
+		untrack(() => (form?.values?.role as 'foodie' | 'truck') ?? (data.role as 'foodie' | 'truck'))
 	);
 	let submitting = $state(false);
 </script>

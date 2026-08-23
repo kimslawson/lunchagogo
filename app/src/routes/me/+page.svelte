@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { enablePush, pushSupported } from '$lib/push';
 
 	let { data, form } = $props();
 
-	let pushOn = $state(!!data.profile?.push_opt_in);
+	let pushOn = $state(untrack(() => !!data.profile?.push_opt_in));
 	let pushMsg = $state('');
 	let working = $state(false);
 

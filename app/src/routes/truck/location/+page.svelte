@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { getPosition } from '$lib/geo';
 	import { relTime } from '$lib/time';
 
 	let { data, form } = $props();
 
-	let lat = $state<number | null>(data.live?.lat ?? null);
-	let lng = $state<number | null>(data.live?.lng ?? null);
-	let address = $state(data.live?.address ?? '');
+	// Seed local state from the initial load (untrack = "just the first value").
+	let lat = $state<number | null>(untrack(() => data.live?.lat ?? null));
+	let lng = $state<number | null>(untrack(() => data.live?.lng ?? null));
+	let address = $state(untrack(() => data.live?.address ?? ''));
 	let locating = $state(false);
 	let geoErr = $state('');
 
