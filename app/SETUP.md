@@ -82,19 +82,27 @@ Your splash is one CloudCannon **site**; the app becomes a **second site** on th
 repo, different branch. Two ways — pick whichever feels comfortable.
 
 ### Option 1 — Let CloudCannon build it (auto-deploys on every push) ✅ recommended
-1. In CloudCannon: **Create Site → Connect** your `lunchagogo` repo.
-2. **Branch:** `claude/lunchagogo-webapp-static`.
-3. In the site's **Settings → Build**:
-   - **Base/source path:** `app`  ← the app lives in this subfolder.
-   - **Build command:** `npm run build`
-   - **Output path:** `build`
-   - **Environment:** Node (18+).
-   - **Environment variables:** add `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`,
-     `PUBLIC_VAPID_PUBLIC_KEY` (needed at build time).
-4. Save & build. CloudCannon serves the result. Every push to this branch rebuilds.
+1. **Create Site → Connect** your `lunchagogo` repo; **Branch:** `claude/lunchagogo-webapp-static`.
+2. **Site Settings → Builds → Configuration:**
+   - **Static site generator: SvelteKit.** (CloudCannon's SvelteKit support is built
+     around `adapter-static`, which this app uses — so it's the right pick, not
+     "Static" or "Custom.")
+   - **Output path:** `app/build` — where the built site lands.
+   - **The subfolder:** the app lives in `app/` (your splash is at the repo root) and
+     CloudCannon builds from the root. So EITHER set the site's **source / base path**
+     to `app`, OR set the build command to `cd app && npm install && npm run build`.
+   - **Environment variables** (Advanced options): add the three `PUBLIC_…` vars —
+     `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `PUBLIC_VAPID_PUBLIC_KEY`.
+     ⚠️ **The build fails without these** (`PUBLIC_SUPABASE_URL is not exported`).
+   - **Node version** (Advanced options, if shown): 20 or 22.
+3. **Save**, then trigger a build. Every push to this branch rebuilds.
 
-*(CloudCannon's exact labels move around; if the Node build fights you, use Option 2 —
-it always works.)*
+> **Custom fallback** — if the SvelteKit preset fights the subfolder, set the SSG to
+> **Custom** and spell it out:
+> Install `cd app && npm install` · Build `cd app && npm run build` · Output `app/build`.
+>
+> *(CloudCannon's exact field labels move around; if the Node build fights you at all,
+> Option 2 below always works.)*
 
 ### Option 2 — Build locally, upload the folder (the FTP-feeling way)
 1. `npm run build` (Part 3).
