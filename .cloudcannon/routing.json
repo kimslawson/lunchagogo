@@ -1,0 +1,6 @@
+{
+	"routes": [
+		{ "from": "/app", "to": "/app/", "status": 301 },
+		{ "from": "/app/(.*)", "to": "/app/", "status": 200 }
+	]
+}
