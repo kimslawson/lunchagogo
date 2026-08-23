@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { supabase } from '$lib/supabaseClient';
 	import { uploadImage } from '$lib/upload';
@@ -6,7 +7,7 @@
 
 	let { data } = $props();
 
-	let pushOn = $state(!!data.profile?.push_opt_in);
+	let pushOn = $state(untrack(() => !!data.profile?.push_opt_in));
 	let pushMsg = $state('');
 	let working = $state(false);
 	let flash = $state('');

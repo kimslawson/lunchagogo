@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { supabase } from '$lib/supabaseClient';
 	import { getPosition } from '$lib/geo';
@@ -7,9 +7,10 @@
 
 	let { data } = $props();
 
-	let lat = $state<number | null>(data.live?.lat ?? null);
-	let lng = $state<number | null>(data.live?.lng ?? null);
-	let address = $state(data.live?.address ?? '');
+	// Seed local state from the initial load (untrack = "just the first value").
+	let lat = $state<number | null>(untrack(() => data.live?.lat ?? null));
+	let lng = $state<number | null>(untrack(() => data.live?.lng ?? null));
+	let address = $state(untrack(() => data.live?.address ?? ''));
 	let locating = $state(false);
 	let geoErr = $state('');
 	let error = $state('');

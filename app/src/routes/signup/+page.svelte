@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { supabase } from '$lib/supabaseClient';
 
 	let role = $state<'foodie' | 'truck'>(
-		page.url.searchParams.get('role') === 'truck' ? 'truck' : 'foodie'
+		untrack(() => (page.url.searchParams.get('role') === 'truck' ? 'truck' : 'foodie'))
 	);
 	let display_name = $state('');
 	let email = $state('');
