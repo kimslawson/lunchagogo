@@ -48,9 +48,31 @@
     <meta property="og:url" content="https://lunchagogo.app">
     <meta property="og:image" content="https://lunchagogo.app/img/og-image.jpg">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="ad24cacd-4eee-4d74-aeba-675f0dd772e8"></script>
+    <style>
+      .splash-login {
+        position: fixed;
+        top: max(0.6rem, env(safe-area-inset-top));
+        right: 0.75rem;
+        z-index: 1000;
+        font-family: panpizza, "Comic Sans MS", sans-serif;
+        font-size: clamp(1rem, 4.5vw, 1.4rem);
+        line-height: 1;
+        background: #ffbb18;
+        color: #1a1206;
+        padding: 0.45em 0.95em;
+        border: 2px solid #1a1206;
+        border-radius: 0.5em;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        text-decoration: none;
+        transition: transform 125ms ease;
+      }
+      .splash-login:hover { transform: scale(1.05); }
+      .splash-login:active { transform: translateY(1px); box-shadow: 0 0 8px rgba(0,0,0,0.5) inset; }
+    </style>
   </head>
 
   <body>
+    <a href="/app/login" class="splash-login">Log in</a>
     <main class="wrapper">
       <section class="bg1 section parallax">
         <h2 class="spacer">&nbsp;</h2>
