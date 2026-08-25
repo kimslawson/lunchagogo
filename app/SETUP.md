@@ -135,9 +135,12 @@ Supabase → **Authentication → URL Configuration:**
 ---
 
 ## Part 6 — Push notifications (optional, free)
-Needs the [Supabase CLI](https://supabase.com/docs/guides/cli):
+Needs the [Supabase CLI](https://supabase.com/docs/guides/cli). **Run these from the
+`app/` folder** — it holds `supabase/config.toml`, which tells the CLI this is the
+project root (otherwise it searches up your filesystem and can't find the function):
 ```sh
-cd app
+cd app                       # the folder with supabase/config.toml — run CLI commands here
+supabase login               # one-time per machine: opens a browser to authorize the CLI
 supabase link --project-ref YOUR-PROJECT-REF
 supabase functions deploy notify
 supabase secrets set \
@@ -147,6 +150,15 @@ supabase secrets set \
 ```
 The app calls this function from the browser when a truck goes live. Without it,
 everything else still works.
+
+> **`supabase login` first.** `link`/`deploy` need the CLI authorized on your machine;
+> being signed into supabase.com in your browser isn't the same thing. Log in once and
+> the token is saved locally.
+>
+> **"Entrypoint path does not exist" / "no such file" on deploy?** You're not in the
+> `app/` folder (the one with `supabase/config.toml`), or the CLI found a different
+> `supabase/` project higher up. `cd` into `app` and re-run. Docker does **not** need to
+> be running — the "Docker is not running" warning is harmless for `deploy`.
 
 ---
 

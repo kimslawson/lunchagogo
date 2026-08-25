@@ -1,0 +1,18 @@
+# Supabase project config.
+#
+# Its main job here: this file marks THIS folder (app/) as the Supabase project
+# root, so the CLI resolves `supabase/functions/...` and `supabase/migrations/...`
+# from here — instead of walking up your filesystem and picking a different
+# `supabase/` directory. Always run `supabase` commands from the `app/` folder.
+#
+# Which cloud project you deploy to is chosen by
+#   supabase link --project-ref <your-project-ref>
+# and stored in supabase/.temp/ — NOT in this file. So this file is safe to commit
+# and share; it contains no secrets and no account-specific IDs.
+project_id = "lunchagogo"
+
+[functions.notify]
+# The app invokes this with the signed-in user's JWT (supabase.functions.invoke),
+# and the function itself checks the caller owns the truck. Require a valid JWT at
+# the gateway too (defense in depth). This matches how the app already calls it.
+verify_jwt = true
