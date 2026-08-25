@@ -77,6 +77,8 @@ Grab the **Project URL** and **anon key** from Project Settings → API.
 In the Supabase **SQL editor**, run in order:
 1. `supabase/migrations/0001_init.sql` — tables, RLS, PostGIS, RPC functions
 2. `supabase/migrations/0002_storage.sql` — the public `media` bucket + storage policies
+3. `supabase/migrations/0003_security_hardening.sql` — DB-enforced identity/location on
+   check-ins, one-truck-per-owner, clamped `nearby_trucks`, live+upcoming location reads
 
 (Or with the Supabase CLI: `supabase db push`.)
 
@@ -118,6 +120,7 @@ with no code change. Full click-by-click walkthrough: [`SETUP.md`](./SETUP.md).
 - **Auth is Supabase GoTrue**, not custom. Passwords are hashed server-side (bcrypt); we never see or store them.
 - **Sessions are re-validated** on every request in `hooks.server.ts` via `getUser()` (calls the Auth server), not just by trusting the cookie.
 - **Row-Level Security is on for every table**, deny-by-default. Writes are gated to the owner; foodies are private from each other; trucks can read their own patrons. Cross-user data access is blocked at the database, so an app bug can't leak it.
+- **DB-enforced invariants** (migration `0003`) so a hostile client that skips the UI can't cheat: a `BEFORE INSERT` trigger sets a check-in's identity from `auth.uid()` and fuzzes its coordinates (no impersonation / precise-location leak); one truck per owner; `nearby_trucks` clamps radius/limit; public location reads are limited to live + upcoming. Note `role` is a UI mode, not a privilege boundary — access is gated by *ownership*, not role.
 - **Storage** writes are scoped to `<uid>/…` paths; reads are public (feed photos). 5 MB cap, images only.
 - **CSP** is managed by SvelteKit (`vite.config.ts`), plus `X-Frame-Options`, `nosniff`, `Referrer-Policy`, and a locked-down `Permissions-Policy` in `hooks.server.ts`.
 - Server secrets (VAPID private key, service-role key) are **never** shipped to the browser and never used by the SvelteKit app — only by the Edge Function.

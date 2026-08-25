@@ -1,0 +1,1 @@
+var e=[`Sun`,`Mon`,`Tue`,`Wed`,`Thu`,`Fri`,`Sat`];export{e as t};

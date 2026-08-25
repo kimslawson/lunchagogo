@@ -1,0 +1,546 @@
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+* {box-sizing: border-box;}
+
+html { 
+  overflow: hidden; /* remove duplicate vertical scrollbar */
+}
+
+/* add button resets like on MG and other mobile resets */
+
+/* reference utility classes */
+.balance-text {
+	text-wrap: balance;  /* Apply (proposed) CSS style */
+}
+
+@font-face {
+  font-family: 'panpizza';
+  src: url('panpizza-webfont.woff2') format('woff2'),
+	   url('panpizza-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'refrigeratordeluxe';
+  src: local('Refrigerator Deluxe'), local('RefrigeratorDeluxe'),
+	   url('RefrigeratorDeluxe.woff2') format('woff2'),
+	   url('RefrigeratorDeluxe.woff') format('woff'),
+	   url('RefrigeratorDeluxe.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+a {
+  color: white;
+/*	text-underline-position: under; */
+}
+a:hover img {
+    transform: scale(1.05);
+}
+a img {
+    transition: transform 125ms ease-in-out;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: panpizza;
+  font-size: 12vw;
+font-size: clamp(2rem, 12vw, 8rem);
+  text-align: center;
+  margin: 0.25em 0.75ex;
+  letter-spacing: 0.5vw;
+}
+h1 a, h2 a, h3 a, h4 a, h5 a {
+  transition: transform 125ms ease-in-out;
+  display: inline-block;
+}
+h1 a:active, h2 a:active, h3 a:active, h4 a:active, h5 a:active {
+  transition: 125ms ease-in-out;
+  text-shadow: 0px 0px 0px rgba(0,0,0,0.5);
+}
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
+  transform: scale(1.05);
+}
+h3 {
+  font-size: 6vw;
+}
+
+p {
+  font-family: panpizza;
+  font-size: 6vw;
+font-size: clamp(1.75rem, 6vw, 4rem);
+  margin: 0 0.75ex;
+}
+p.supplemental {
+  margin-bottom: 1ex;
+  font-size: clamp(1.5rem, 4.25vw, 2rem);
+/*  max-width: clamp(60vw,75vw,88vw) !important; /* I thought this would work but it's not as good as the simple old way below */
+  width: 21em !important;
+  max-width: 75vw !important;
+}
+p a {
+  color: black;
+  letter-spacing: 0.0625vw;
+  transition: transform 125ms ease-in-out;
+  display: inline-block;
+}
+p a:hover {
+  transition: 125ms;
+  text-shadow: 0px 0px 10px rgba(255,255,255,0.5);
+  transform: scale(1.05);
+}
+p a:active {
+  transition: 125ms;
+  text-shadow: 0px 0px 0px rgba(255,255,255,0.5);
+}
+
+section.static h2 {
+  max-width: 5em;
+max-width: 6em;
+max-width: 7em;
+}
+section.static p {
+  max-width: 12.35em;
+max-width: 9.25em;
+  color: black;
+  text-shadow: none;
+}
+
+::selection {
+  background-color: #2d7bca;
+}
+
+.wrapper {
+  /* The height needs to be set to a fixed value for the effect to work.
+   * 100vh is the full height of the viewport. */
+  height: 100vh;
+  /* The scaling of the images would add a horizontal scrollbar, so disable x overflow. */
+  overflow-x: hidden;
+  /* Enable scrolling on the page. */
+  overflow-y: auto;
+  /* Set the perspective to 2px. This is essentailly the simulated distance from the viewport to transformed objects.*/
+  perspective: 2px;
+  scroll-behavior: smooth;
+}
+
+.section {
+  /* Needed for children to be absolutely positioned relative to the parent. */
+  position: relative;
+  /* The height of the container. Must be set, but it doesn't really matter what the value is. */
+  min-height: 100vh;
+  height: auto;
+/* don't do this fix for mobilesafari's chrome... it sucks */
+/*  min-height: -webkit-fill-available; */
+/*  min-height: fill-available; */
+  
+  /* For text formatting. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  text-shadow: 0 0 10px #000;
+}
+section.bg1 {
+  justify-content: space-between;
+}
+
+.parallax {
+  transform-style: preserve-3d;
+}
+.parallax::after {
+  /* Display and position the pseudo-element */
+  content: " ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+   
+  /* do appropriate background things */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+	
+  /* Move the pseudo-element back away from the camera,
+   * then scale it back up to fill the viewport.
+   * Because the pseudo-element is further away, it appears to move more slowly, like in real life. */
+/*  transform: translateZ(-2px) scale(2); */
+  transform: translate3d(0,0,-2px) scale(2);
+  /* Force the background image to fill the whole element. */
+/*  background-size: 100%; */
+  /* Keep the image from overlapping sibling elements. */ 
+  z-index: -1;
+  
+  /* add blur here, and not using backdrop-filter, because that doesn't work with position: absolute */
+  filter: blur(2px);
+}
+
+/* The styling for the static div. */
+.static {
+/*  background: red; */
+/*  background: #b51717; */
+  background: #F2912A;
+/*  background-image: url('https://ak7.picdn.net/shutterstock/videos/1030559387/thumb/1.jpg'); */
+  background-image: url('/img/static-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding: 2em 0;
+  z-index: 1; /* without this, the static sections get overlaid by the parallax sections */
+  /* Reminder: if it's a CSS problem, it's always z-index */
+}
+.pitch.section.static {
+  padding-bottom: 4em; /* need more space on wide but short screens */
+}
+
+/* Sets the actual background images */
+.bg1::after {
+  background-image: url('/img/lunch-a-gogo-follow-the-food.jpg');
+  background-color: white;
+}
+
+.bg2::after {
+  background-image: url('/img/lunch-a-gogo-feel-the-hype.png');
+  background-color: black;
+  transform: translate3d(0,0,-2px) scale(2.05) !important;
+  /* Force the background image to fill the whole element. */
+  /* needs to be 2.05 rather than 2 because there's a small error by a few px at the edge and it looks bad when the background is black */
+  top: 2vh;
+  /* needed to compensate for above scaling because the black overlaps the .bg1 section before scroll and it looks bad */
+}
+
+
+/* utilities from vendors */
+.pulsing {
+  animation: opacityPulse 4s ease-out;
+  animation-iteration-count: infinite; 
+  opacity: 1;
+}
+
+/* tab view */
+.tabform {
+  margin-top: 1em;
+  transition: all 125ms ease-in-out 3s; 
+  /* slight delay after focus change */
+  /* this allows for clicking submit without the form shrinking, jarringly */
+}
+.tabform:focus-within {
+  transform: scale(1.05);
+  transition: all 125ms ease-out 0s; 
+  /* instant feedback when focused */
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  margin-bottom: -2px;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  transition: 500ms background-color;
+  background-color: transparent;
+  color: black;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 1ex;
+/*  transition: 0.3s; */
+  font-family: panpizza;
+  font-size: 4vw;
+  width: 32vw;
+}
+.tab button.wide {
+  width: auto;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: white;
+  color: #333;
+}
+.tab button:focus {
+  outline: none;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: white;
+  color: #333;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  width: 64vw;
+  background-color: white;
+  color: #333;
+  text-shadow: none;
+  padding: 2vmax 3vmax 3vmax 3vmax; 
+  margin-bottom: 6vw;
+}
+
+.tabcontent p {
+  margin: 0 auto;
+  max-width: none !important;
+}
+
+
+/* Forms */
+.form .form-control {
+  display: block;
+}
+.form-group {
+  margin-left: 0px;
+  margin-bottom: 1.25em;
+}
+.form-group label {
+}
+.form-group .note {
+  float: right;
+  font-size: clamp(1.5rem, 4.25vw, 2rem);
+}
+.form-group .required {
+  color: #cc0000;
+}
+.form-group.field-zip, .form-group.field-phone {
+  width: 49%;
+  display: inline-block;
+}
+.form-group.field-zip {
+  margin-left: 0.5ex;
+  float: right;
+}
+.form label {
+  font-family: panpizza;
+  font-size: 4vw;
+}
+.form input {
+  font-size: 4vw;
+  width: 100%;
+  -webkit-appearance: none;
+  border-radius: 0.5ex;
+  padding: 0.25ex 0.51ex;
+  border: 1px solid black;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.25) inset;
+  color: black;
+  letter-spacing: unset;
+  transition: background 125ms ease-in-out;
+}
+.form input[type="text"], .form input[type="email"], .form input[type="tel"] {
+  font-family: refrigeratordeluxe;
+  letter-spacing: -0.0625vw;
+}
+.form input[type="submit"] {
+  font-family: panpizza;
+  background-color: #ffbb18;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+  padding: 0.25em 1em;
+  width: auto;
+  margin: .25em auto !important;
+  display: block;
+  color: black;
+}
+.form input[type="submit"]:active {
+  background-color: #E49237;
+  transition: 125ms ease-in-out;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.5) inset;
+}
+.form input:focus {
+  outline: none;
+/*  box-shadow: 0 0px 10px #f6960d inset; */
+  background-color: black;
+  color: white;
+}
+.form input::placeholder {
+    opacity: 0.75;
+    /* the default placeholder color is too light on the focused inputs */
+    /* this might run afoul of WCAG contrast guidelines, but it's just a placeholder so ¯\_(ツ)_/¯ */
+}
+.form input::selection {
+  color: white;
+  background-color: #2d7bca;
+}
+.form input:-webkit-autofill {
+  /* remove autofill background
+     from https://stackoverflow.com/questions/2781549/removing-input-background-colour-for-chrome-autocomplete */
+  -webkit-background-clip: text !important;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #ccc;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #ccc;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #ccc;
+}
+
+section.footer {
+  height: auto;
+}
+.social ul {
+  margin: 0px;
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+}
+.footer .social li {
+  display: inline-block;
+}
+.footer .social img,
+.footer .social li.empty {
+  width: 5vw;
+  margin-right: 1vw;
+}
+section.footer p {
+  max-width: 88vw;
+  font-size: clamp(1.5rem, 4.25vw, 2rem);
+}
+.dingus {
+  font-size: smaller;
+}
+/* the easter egg wasn't discoverable, so I added this tip */
+.dingus::after {
+  content: "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️️";
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(calc(50vw - 50%), calc(50vh - 50%));
+  padding: 0.5em;
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 0.5em;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+  
+  /* if we don't do this, the ::after element will fade in on it's own hover, not just the parent .dingus */
+  pointer-events: none;
+}
+.dingus:hover::after {
+  opacity: 1;
+}
+
+#surprise {
+  position: fixed; 
+  top: 0px; 
+  left: 0px; 
+  width: 100vw; 
+  height: 100vw; 
+  pointer-events: none;
+}
+body > i {
+  pointer-events: none;
+}
+
+/* Media Queries */
+
+/* silly ipad-specific fixes */
+@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait) {
+  .wrapper {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+  .parallax::after {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+}
+@media all and (device-width: 1024px) and (device-height: 768px) and (orientation:landscape) {
+  .wrapper {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+  .parallax::after {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+}
+
+/* Small Screens */
+@media only screen and (max-width: 768px) {
+  .tab button {
+    font-size: 6vw;
+  }
+  h1, h2 {
+/*    font-size: 14vw; */
+/*	letter-spacing: 0.5vw; */
+  }
+  .downward.indicator {
+    padding-bottom: 1.25em;
+  }
+  .wrapper {
+	/* silly fix for iOS from httploas://github.com/animate-css/animate.css/issues/298 */
+	webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+  }
+  .parallax::after {
+	/* silly fix for iOS from https://github.com/animate-css/animate.css/issues/298 */
+/*	webkit-backface-visibility: hidden; */
+/*	-webkit-transform: translate3d(0,0,0); */
+  }
+  section.static h2 {
+    max-width: 4.75em;
+max-width: none;
+  }
+  h3, p {
+/*    font-size: 9.5vw; */
+  }
+  .tab button {
+    width: 44vw;
+  }
+  .tabcontent {
+	width: 88vw;
+  }
+  .form label {
+    font-size: 8vw;
+  }
+  .form input {
+    font-size: 8vw;
+/*	letter-spacing: 0.5vw; */
+  }
+  .form-group.field-phone {
+/*    width: 50vw; */
+    width: 66%;
+  }
+  .form-group.field-zip {
+/*    width: 25vw; */
+    width: 30%;
+  }
+  section.footer {
+    padding-bottom: 6em;
+  }
+  section.footer .dingus, section.footer p {
+    display: block;
+    text-align: center;
+  }
+}
+
+/* accessibility fixes */
+@media screen and
+  (prefers-reduced-motion: reduce),
+  (update: slow) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important; /* Hat tip Nick/cssremedy (https://css-tricks.com/revisiting-prefers-reduced-motion-the-reduced-motion-media-query/#comment-1700170) */
+    transition-duration: 0.001ms !important;
+  }
+
+  /* kill parallax effect */
+  .parallax::after {
+    transform: none !important;
+  }
+  .bg2::after {
+    top: 0 !important;
+  }
+}

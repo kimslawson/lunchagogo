@@ -22,6 +22,8 @@ itself, and the host auto-deploys from GitHub every time code is pushed.
 2. Open `app/supabase/migrations/0001_init.sql` from this repo, copy **all** of it,
    paste into the editor, click **Run**. You should see "Success."
 3. New query again. Do the same with `app/supabase/migrations/0002_storage.sql`, **Run**.
+4. New query again. Do the same with `app/supabase/migrations/0003_security_hardening.sql`,
+   **Run** (DB-enforced identity + location fuzzing, one-truck-per-owner, query limits).
 
 That's your whole database, security rules, and photo storage — done.
 
