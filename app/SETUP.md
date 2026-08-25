@@ -21,6 +21,8 @@ with already-signed-in visitors bounced to the app. You still need a **Supabase*
 1. Left sidebar → **SQL Editor** → **New query**.
 2. Copy all of `app/supabase/migrations/0001_init.sql`, paste, **Run** (expect "Success").
 3. New query → do the same with `app/supabase/migrations/0002_storage.sql` → **Run**.
+4. New query → do the same with `app/supabase/migrations/0003_security_hardening.sql` → **Run**
+   (DB-enforced identity, location fuzzing, one-truck-per-owner, query limits).
 
 ### 1c. Grab your keys (Supabase moved these recently)
 - **Project URL:** click the green **Connect** button (top bar), or **Project

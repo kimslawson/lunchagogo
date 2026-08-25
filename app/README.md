@@ -77,9 +77,15 @@ Short version:
 - **Auth is Supabase GoTrue**, not hand-rolled. Passwords hashed server-side (bcrypt).
 - **Row-Level Security on every table**, deny-by-default — the real guard on your data,
   and identical to Option A.
+- **DB-enforced invariants** (migration `0003`), so a hostile client that skips the UI
+  can't cheat: a `BEFORE INSERT` trigger sets a check-in's identity from `auth.uid()` and
+  fuzzes its coordinates (no impersonation, no precise-location leak); one truck per owner;
+  `nearby_trucks` clamps radius/limit; public location reads are limited to live + upcoming.
 - **Storage** writes scoped to `<uid>/…`; images only, 5 MB cap.
-- **Security headers** ship in `static/_headers` (CloudCannon/Netlify honor it); CSP is
-  emitted as a `<meta>` tag.
+- **CSP** is emitted as a `<meta>` tag; extra hardening headers can be added via
+  `.cloudcannon/routing.json` (`headers`).
+- **`role` is a UI mode, not a privilege boundary** — truck registration is self-service,
+  and access is gated by *ownership* (`owns_truck`), not role. Don't rely on role for auth.
 - The session token lives in the browser here (that's the A-vs-B difference above). If
   that matters for your threat model, deploy Option A instead — same repo, other branch.
 

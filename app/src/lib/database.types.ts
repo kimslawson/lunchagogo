@@ -179,7 +179,8 @@ export interface Database {
 				Insert: {
 					foodie_id: string;
 					truck_id: string;
-					actor_name: string;
+					// Set by the DB trigger from auth.uid()'s profile — clients don't supply these.
+					actor_name?: string;
 					actor_avatar?: string | null;
 					photo_url?: string | null;
 					caption?: string | null;

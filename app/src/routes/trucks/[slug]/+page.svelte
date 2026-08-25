@@ -57,11 +57,11 @@
 		const up = await uploadImage(data.user!.id, 'checkins', file instanceof File ? file : null);
 		if (up.error) return (flashErr = up.error);
 
+		// actor_name/actor_avatar and the final fuzzing are set by the DB trigger
+		// (checkin_guard) from auth.uid() — not trusted from the client.
 		const { error } = await supabase.from('checkins').insert({
 			foodie_id: data.user!.id,
 			truck_id: data.truck.id,
-			actor_name: data.profile?.display_name ?? 'Foodie',
-			actor_avatar: data.profile?.avatar_url ?? null,
 			photo_url: up.url ?? null,
 			caption: caption || null,
 			lat: pos?.lat ?? null,
