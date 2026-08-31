@@ -106,7 +106,9 @@
 	});
 </script>
 
-<div class="map" bind:this={el}></div>
+<div class="map-frame">
+	<div class="map" bind:this={el}></div>
+</div>
 
 <style>
 	:global(.truck-pin) {
