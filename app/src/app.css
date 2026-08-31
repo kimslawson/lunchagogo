@@ -7,8 +7,8 @@
 
 @font-face {
   font-family: 'panpizza';
-  src: url('/fonts/panpizza-webfont.woff2') format('woff2'),
-       url('/fonts/panpizza-webfont.woff') format('woff');
+  src: url('/app/fonts/panpizza-webfont.woff2') format('woff2'),
+       url('/app/fonts/panpizza-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -17,9 +17,9 @@
 @font-face {
   font-family: 'Refrigerator Deluxe';
   src: local('Refrigerator Deluxe'), local('RefrigeratorDeluxe'),
-       url('/fonts/RefrigeratorDeluxe.woff2') format('woff2'),
-       url('/fonts/RefrigeratorDeluxe.woff') format('woff'),
-       url('/fonts/RefrigeratorDeluxe.ttf') format('truetype');
+       url('/app/fonts/RefrigeratorDeluxe.woff2') format('woff2'),
+       url('/app/fonts/RefrigeratorDeluxe.woff') format('woff'),
+       url('/app/fonts/RefrigeratorDeluxe.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -75,7 +75,7 @@ body {
   /* sunburst behind everything, fixed so the shell floats on it */
   background-image:
     radial-gradient(circle at 50% 38%, rgba(255,255,255,0.18), rgba(255,255,255,0) 60%),
-    url('/img/sunburst.jpg');
+    url('/app/img/sunburst.jpg');
   background-size: cover;
   background-position: center top;
   background-attachment: fixed;
@@ -389,7 +389,7 @@ select { background-image: none; }
 .flash.ok  { background: #e8f8ee; color: var(--green); border-color: var(--green); }
 
 /* ---- Map ----------------------------------------------------------------- */
-.map {
+.map-frame {
   width: 100%;
   height: 60dvh;
   min-height: 320px;
@@ -397,7 +397,16 @@ select { background-image: none; }
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-md);
+  /* Trap Leaflet's internal z-indexes (its panes/controls climb to ~1000) inside
+     this frame, so they can't paint over the sticky top bar (z 20) or the bottom
+     nav (z 30) as the map scrolls under them. */
+  isolation: isolate;
+  /* Give the frame its own compositing layer so iOS Safari actually clips the
+     transformed map tiles to the rounded corners instead of letting them bleed
+     out to the screen edges. */
+  transform: translateZ(0);
 }
+.map { width: 100%; height: 100%; }
 .leaflet-container { font-family: var(--font-data); }
 
 /* ---- Auth / centered pages ---------------------------------------------- */
